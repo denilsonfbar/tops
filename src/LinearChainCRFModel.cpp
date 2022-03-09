@@ -355,7 +355,7 @@ namespace tops {
     ProbabilisticModelParameterValuePtr transitions = parameters.getMandatoryParameterValue("transitions");
     ProbabilisticModelParameterValuePtr emissions = parameters.getMandatoryParameterValue("emission_probabilities");
 
-    std::vector<HMMStatePtr> state_list;
+    std::vector<CRFStatePtr> state_list;
     AlphabetPtr states = AlphabetPtr(new Alphabet());
     AlphabetPtr observations = AlphabetPtr(new Alphabet());
     states->initializeFromVector(state_names->getStringVector());
@@ -444,7 +444,7 @@ namespace tops {
           std::cerr << "ERROR: Could not configure the state " << state_name->name() << "!" << std::endl;
           exit(-1);
         }
-        HMMStatePtr statePtr = HMMStatePtr(new HMMState(state_list.size(), state_name, e, t));
+        CRFStatePtr statePtr = CRFStatePtr(new CRFState(state_list.size(), state_name, e, t));
         state_list.push_back(statePtr);
       }
 
@@ -514,7 +514,7 @@ namespace tops {
   void LinearChainCRFModel::setObservationSymbols(AlphabetPtr obs) {
     tops::ProbabilisticModel::setAlphabet(obs);
   }
-  void LinearChainCRFModel::setStates(std::vector<HMMStatePtr> states, AlphabetPtr state_names) {
+  void LinearChainCRFModel::setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names) {
     _states = states;
     _state_names = state_names;
   }

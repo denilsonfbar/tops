@@ -41,15 +41,15 @@
 
 namespace tops {
 
-  class DLLEXPORT HMMState {
+  class DLLEXPORT CRFState {
   protected:
     int _id;
     SymbolPtr _name;
     DiscreteIIDModelPtr _emission;
     DiscreteIIDModelPtr _transitions;
   public:
-    HMMState(){}
-    HMMState (int id, SymbolPtr name, DiscreteIIDModelPtr emission,  DiscreteIIDModelPtr transitions) : _id(id), _name(name), _emission(emission), _transitions(transitions) {}
+    CRFState(){}
+    CRFState (int id, SymbolPtr name, DiscreteIIDModelPtr emission,  DiscreteIIDModelPtr transitions) : _id(id), _name(name), _emission(emission), _transitions(transitions) {}
     void setName (SymbolPtr name) {
       _name = name;
     }
@@ -82,7 +82,7 @@ namespace tops {
 
 
   };
-  typedef boost::shared_ptr <HMMState> HMMStatePtr;
+  typedef boost::shared_ptr <CRFState> CRFStatePtr;
 
   //! This class represents a hidden markov model
   class DLLEXPORT LinearChainCRFModel :   public DecodableModel
@@ -92,14 +92,14 @@ namespace tops {
     LinearChainCRFModel() {
     };
 
-    LinearChainCRFModel( std::vector <HMMStatePtr> states, DiscreteIIDModelPtr initial_probability, AlphabetPtr state_names, AlphabetPtr observation_symbols) :    _states(states) , _initial_probability(initial_probability), _state_names (state_names) {
+    LinearChainCRFModel( std::vector <CRFStatePtr> states, DiscreteIIDModelPtr initial_probability, AlphabetPtr state_names, AlphabetPtr observation_symbols) :    _states(states) , _initial_probability(initial_probability), _state_names (state_names) {
       tops::ProbabilisticModel::setAlphabet(observation_symbols);
 
 
     }
 
 
-    void setStates(std::vector<HMMStatePtr> states) {
+    void setStates(std::vector<CRFStatePtr> states) {
       _states = states;
     }
 
@@ -119,7 +119,7 @@ namespace tops {
 
     virtual std::string str () const ;
 
-    virtual void setState (int id, HMMStatePtr state)
+    virtual void setState (int id, CRFStatePtr state)
     {
       if(_states.size() < _state_names->size())
         _states.resize(_state_names->size());
@@ -127,7 +127,7 @@ namespace tops {
       state->setId(id);
     }
 
-    virtual HMMStatePtr getState(int id) const
+    virtual CRFStatePtr getState(int id) const
     {
       return _states[id];
     }
@@ -157,12 +157,12 @@ namespace tops {
 
     void setInitialProbability(DiscreteIIDModelPtr initial) ;
     void setObservationSymbols(AlphabetPtr obs) ;
-    void setStates(std::vector<HMMStatePtr> states, AlphabetPtr state_names) ;
+    void setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names) ;
 
 
 
   private:
-    std::vector <HMMStatePtr> _states;
+    std::vector <CRFStatePtr> _states;
     DiscreteIIDModelPtr _initial_probability;
     std::vector<double> _ctFactors;
     AlphabetPtr _state_names;

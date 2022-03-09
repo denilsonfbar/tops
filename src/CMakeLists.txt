@@ -23,6 +23,8 @@ ChiSquare
 MaximalDependenceDecomposition
 MaximalDependenceDecompositionCreator
 TrainMaximalDependenceDecomposition
+LinearChainCRFModel
+LinearChainCRFModelCreator
 )
 
 
