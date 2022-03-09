@@ -42,136 +42,94 @@
 namespace tops {
 
   class DLLEXPORT CRFState {
-  protected:
-    int _id;
-    SymbolPtr _name;
-    DiscreteIIDModelPtr _emission;
-    DiscreteIIDModelPtr _transitions;
-  public:
-    CRFState(){}
-    CRFState (int id, SymbolPtr name, DiscreteIIDModelPtr emission,  DiscreteIIDModelPtr transitions) : _id(id), _name(name), _emission(emission), _transitions(transitions) {}
-    void setName (SymbolPtr name) {
-      _name = name;
-    }
-    void setEmissions (DiscreteIIDModelPtr e)
-    {
-      _emission = e;
-    }
-    void setTransition (DiscreteIIDModelPtr t)
-    {
-      _transitions = t;
-    }
-    DiscreteIIDModelPtr &emission() {
-      return _emission;
-    }
-    DiscreteIIDModelPtr &transitions() {
-      return _transitions;
-    }
-    bool isSilent() {
-      return (_emission == NULL);
-    }
-    SymbolPtr getName() const {
-      return _name;
-    }
-    int getId() {
-      return _id;
-    }
-    void setId(int i) {
-      _id = i;
-    }
 
+    protected:
+      int _id;
+      SymbolPtr _name;
+      DiscreteIIDModelPtr _emission;
+      DiscreteIIDModelPtr _transitions;
+  
+    public:
+      CRFState(){}
+      CRFState(int id, SymbolPtr name, DiscreteIIDModelPtr emission, DiscreteIIDModelPtr transitions) : _id(id), _name(name), _emission(emission), _transitions(transitions) {}
+    
+      void setId(int i) { _id = i; }
+      void setName(SymbolPtr name) { _name = name; }
+      void setEmissions(DiscreteIIDModelPtr e) { _emission = e; }
+      void setTransition(DiscreteIIDModelPtr t) { _transitions = t; }
+    
+      int getId() { return _id; }
+      SymbolPtr getName() const { return _name; }
+      DiscreteIIDModelPtr& emission() { return _emission; }
+      DiscreteIIDModelPtr& transitions() { return _transitions; }
 
+      bool isSilent() {
+        return (_emission == NULL);
+      }
   };
   typedef boost::shared_ptr <CRFState> CRFStatePtr;
 
-  //! This class represents a hidden markov model
-  class DLLEXPORT LinearChainCRFModel :   public DecodableModel
-  {
-  public:
+  class DLLEXPORT LinearChainCRFModel : public DecodableModel {
+  
+    private:
+      std::vector <CRFStatePtr> _states;
+      DiscreteIIDModelPtr _initial_probability;
+      std::vector<double> _ctFactors;
+      AlphabetPtr _state_names;
+      void scale(std::vector<double>& in, int t);
+      std::vector<double> iterate(Sequence& obs);
+  
+    public:
+      LinearChainCRFModel() {}
+      LinearChainCRFModel(std::vector <CRFStatePtr> states, DiscreteIIDModelPtr initial_probability, AlphabetPtr state_names, AlphabetPtr observation_symbols) : _states(states), _initial_probability(initial_probability), _state_names(state_names) {
+        tops::ProbabilisticModel::setAlphabet(observation_symbols);
+      }
+      virtual void initialize(const ProbabilisticModelParameters& par);
+      virtual ProbabilisticModelCreatorPtr getFactory() const {
+        return LinearChainCRFModelCreatorPtr(new LinearChainCRFModelCreator());
+      }
+      virtual ~LinearChainCRFModel() {}
 
-    LinearChainCRFModel() {
-    };
+      virtual void setState(int id, CRFStatePtr state) {
+        if(_states.size() < _state_names->size())
+          _states.resize(_state_names->size());
+        _states[id] = state;
+        state->setId(id);
+      }
+      void setStates(std::vector<CRFStatePtr> states) { _states = states; }
+      void setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names);
+      void setInitialProbability(DiscreteIIDModelPtr initial);
+      void setObservationSymbols(AlphabetPtr obs) ;
 
-    LinearChainCRFModel( std::vector <CRFStatePtr> states, DiscreteIIDModelPtr initial_probability, AlphabetPtr state_names, AlphabetPtr observation_symbols) :    _states(states) , _initial_probability(initial_probability), _state_names (state_names) {
-      tops::ProbabilisticModel::setAlphabet(observation_symbols);
+      virtual DecodableModel* decodable() { return this; }
+      virtual std::string model_name() const { return "LinearChainCRFModel"; }
+      virtual CRFStatePtr getState(int id) const { return _states[id]; }
+      virtual std::string getStateName(int state) const;
+      virtual AlphabetPtr getStateNames() const { return _state_names; }
+      virtual ProbabilisticModelParameters parameters() const;
+      virtual std::string str() const;
 
+      //! Choose the observation given a state
+      virtual Sequence& chooseObservation(Sequence& h, int i, int state) const;
+      
+      //! Choose a state
+      virtual int chooseState(int state) const;
+      //! Choose first state
+      virtual int chooseFirstState() const;
+    
+      //! Forward algorithm
+      virtual double forward(const Sequence& s, Matrix& alpha) const;
 
-    }
+      //! Backward algorithm
+      virtual double backward(const Sequence& s, Matrix& beta) const;
 
-
-    void setStates(std::vector<CRFStatePtr> states) {
-      _states = states;
-    }
-
-
-    virtual ~LinearChainCRFModel(){}
-
-    //! Choose the observation given a state
-    virtual Sequence &  chooseObservation ( Sequence & h,int i,  int state) const ;
-    //! Choose a state
-    virtual int chooseState(int state ) const ;
-    //! Choose first state
-    virtual int chooseFirstState() const ;
-    virtual AlphabetPtr getStateNames() const {
-      return _state_names;
-    }
-    virtual std::string getStateName(int state) const;
-
-    virtual std::string str () const ;
-
-    virtual void setState (int id, CRFStatePtr state)
-    {
-      if(_states.size() < _state_names->size())
-        _states.resize(_state_names->size());
-      _states[id] = state;
-      state->setId(id);
-    }
-
-    virtual CRFStatePtr getState(int id) const
-    {
-      return _states[id];
-    }
-    //! Forward algorithm
-    virtual double forward(const Sequence & s, Matrix &alpha) const;
-
-    //! Backward algorithm
-    virtual double backward(const Sequence & s, Matrix &beta) const;
-
-    //! Viterbi algorithm
-    virtual double viterbi (const Sequence &s, Sequence &path, Matrix & gamma) const ;
-
-    virtual std::string model_name() const {
-      return "LinearChainCRFModel";
-    }
-    virtual ProbabilisticModelCreatorPtr getFactory() const {
-      return LinearChainCRFModelCreatorPtr(new LinearChainCRFModelCreator());
-    }
-    virtual DecodableModel * decodable()  {
-      return this;
-    }
-    virtual void trainBaumWelch (SequenceList & training_set, int maxiterations, double diff) ;
-
-    virtual void initialize(const ProbabilisticModelParameters & par) ;
-
-    virtual ProbabilisticModelParameters parameters() const ;
-
-    void setInitialProbability(DiscreteIIDModelPtr initial) ;
-    void setObservationSymbols(AlphabetPtr obs) ;
-    void setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names) ;
-
-
-
-  private:
-    std::vector <CRFStatePtr> _states;
-    DiscreteIIDModelPtr _initial_probability;
-    std::vector<double> _ctFactors;
-    AlphabetPtr _state_names;
-    void scale(std::vector<double> & in, int t);
-    std::vector<double> iterate(Sequence & obs);
+      //! Viterbi algorithm
+      virtual double viterbi(const Sequence& s, Sequence& path, Matrix& gamma) const;
+    
+      virtual void trainBaumWelch(SequenceList& training_set, int maxiterations, double diff) ;
   };
-
   typedef boost::shared_ptr<LinearChainCRFModel> LinearChainCRFModelPtr;
-}
 
+}
 
 #endif
