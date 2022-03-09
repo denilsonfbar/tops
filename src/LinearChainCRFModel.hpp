@@ -1,10 +1,11 @@
 /*
- *       HiddenMarkovModel.hpp
+ *       LinearChainCRFModel.hpp
  *
  *       Copyright 2011 Andre Yoshiaki Kashiwabara <akashiwabara@usp.br>
- *                      Ígor Bonadio <ibonadio@ime.usp.br>
+ *                      ï¿½gor Bonadio <ibonadio@ime.usp.br>
  *                      Vitor Onuchic <vitoronuchic@gmail.com>
  *                      Alan Mitchell Durham <aland@usp.br>
+ *                 2022 Denilson Fagundes Barbosa <denilsonfbar@gmail.com>
  *
  *       This program is free software; you can redistribute it and/or modify
  *       it under the terms of the GNU  General Public License as published by
@@ -22,8 +23,8 @@
  *       MA 02110-1301, USA.
  */
 
-#ifndef HIDDEN_MARKOV_MODEL_HPP
-#define HIDDEN_MARKOV_MODEL_HPP
+#ifndef LINEAR_CHAIN_CRF_MODEL_HPP
+#define LINEAR_CHAIN_CRF_MODEL_HPP
 
 #include "crossplatform.hpp"
 
@@ -33,7 +34,7 @@
 #include "Alphabet.hpp"
 #include "ContextTree.hpp"
 
-#include "HiddenMarkovModelCreator.hpp"
+#include "LinearChainCRFModelCreator.hpp"
 #include "util.hpp"
 #include <cstdarg>
 #include <vector>
@@ -84,14 +85,14 @@ namespace tops {
   typedef boost::shared_ptr <HMMState> HMMStatePtr;
 
   //! This class represents a hidden markov model
-  class DLLEXPORT HiddenMarkovModel :   public DecodableModel
+  class DLLEXPORT LinearChainCRFModel :   public DecodableModel
   {
   public:
 
-    HiddenMarkovModel() {
+    LinearChainCRFModel() {
     };
 
-    HiddenMarkovModel( std::vector <HMMStatePtr> states, DiscreteIIDModelPtr initial_probability, AlphabetPtr state_names, AlphabetPtr observation_symbols) :    _states(states) , _initial_probability(initial_probability), _state_names (state_names) {
+    LinearChainCRFModel( std::vector <HMMStatePtr> states, DiscreteIIDModelPtr initial_probability, AlphabetPtr state_names, AlphabetPtr observation_symbols) :    _states(states) , _initial_probability(initial_probability), _state_names (state_names) {
       tops::ProbabilisticModel::setAlphabet(observation_symbols);
 
 
@@ -103,7 +104,7 @@ namespace tops {
     }
 
 
-    virtual ~HiddenMarkovModel(){}
+    virtual ~LinearChainCRFModel(){}
 
     //! Choose the observation given a state
     virtual Sequence &  chooseObservation ( Sequence & h,int i,  int state) const ;
@@ -140,10 +141,10 @@ namespace tops {
     virtual double viterbi (const Sequence &s, Sequence &path, Matrix & gamma) const ;
 
     virtual std::string model_name() const {
-      return "HiddenMarkovModel";
+      return "LinearChainCRFModel";
     }
     virtual ProbabilisticModelCreatorPtr getFactory() const {
-      return HiddenMarkovModelCreatorPtr(new HiddenMarkovModelCreator());
+      return LinearChainCRFModelCreatorPtr(new LinearChainCRFModelCreator());
     }
     virtual DecodableModel * decodable()  {
       return this;
@@ -169,7 +170,7 @@ namespace tops {
     std::vector<double> iterate(Sequence & obs);
   };
 
-  typedef boost::shared_ptr<HiddenMarkovModel> HiddenMarkovModelPtr;
+  typedef boost::shared_ptr<LinearChainCRFModel> LinearChainCRFModelPtr;
 }
 
 

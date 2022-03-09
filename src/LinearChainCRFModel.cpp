@@ -1,10 +1,11 @@
 /*
- *       HiddenMarkovModel.cpp
+ *       LinearChainCRFModel.cpp
  *
  *       Copyright 2011 Andre Yoshiaki Kashiwabara <akashiwabara@usp.br>
- *                      Ígor Bonadio <ibonadio@ime.usp.br>
+ *                      ï¿½gor Bonadio <ibonadio@ime.usp.br>
  *                      Vitor Onuchic <vitoronuchic@gmail.com>
  *                      Alan Mitchell Durham <aland@usp.br>
+ *                 2022 Denilson Fagundes Barbosa <denilsonfbar@gmail.com>
  *
  *       This program is free software; you can redistribute it and/or modify
  *       it under the terms of the GNU  General Public License as published by
@@ -24,7 +25,7 @@
 
 #include <boost/numeric/ublas/matrix.hpp>
 #include "Alphabet.hpp"
-#include "HiddenMarkovModel.hpp"
+#include "LinearChainCRFModel.hpp"
 #include "ProbabilisticModelParameter.hpp"
 #include "Symbol.hpp"
 #include <iostream>
@@ -35,26 +36,26 @@
 #include <stdio.h>
 
 namespace tops {
-  std::string HiddenMarkovModel::getStateName(int state) const{
+  std::string LinearChainCRFModel::getStateName(int state) const{
       return getState(state)->getName()->name();
     }
 
-  Sequence &  HiddenMarkovModel::chooseObservation ( Sequence & h, int i, int state) const
+  Sequence &  LinearChainCRFModel::chooseObservation ( Sequence & h, int i, int state) const
   {
     if((state >= 0) && (!getState(state)->isSilent() ))
       return getState(state)->emission()->chooseWithHistory(h,i,1);
     return h;
   }
-  int HiddenMarkovModel::chooseState(int state) const
+  int LinearChainCRFModel::chooseState(int state) const
   {
     return getState(state) ->transitions()->choose();
   }
-  int HiddenMarkovModel::chooseFirstState() const
+  int LinearChainCRFModel::chooseFirstState() const
   {
     return _initial_probability->choose();
   }
 
-  double HiddenMarkovModel::forward(const Sequence & sequence, Matrix &a) const
+  double LinearChainCRFModel::forward(const Sequence & sequence, Matrix &a) const
   {
     int nstates = _states.size();
     int size = sequence.size();
@@ -83,7 +84,7 @@ namespace tops {
   }
 
     //! Backward algorithm
-  double HiddenMarkovModel::backward(const Sequence & sequence, Matrix &b) const
+  double LinearChainCRFModel::backward(const Sequence & sequence, Matrix &b) const
   {
     int nstates = _states.size();
     int size = sequence.size();
@@ -112,7 +113,7 @@ namespace tops {
   }
 
     //! Viterbi algorithm
-  double HiddenMarkovModel::viterbi (const Sequence &sequence, Sequence &path, Matrix & viterbi) const
+  double LinearChainCRFModel::viterbi (const Sequence &sequence, Sequence &path, Matrix & viterbi) const
   {
     typedef boost::numeric::ublas::matrix<int> MatrixInt;
     int nstates = _states.size();
@@ -164,7 +165,7 @@ namespace tops {
 
   }
 
-  void HiddenMarkovModel::scale(std::vector<double> & in,  int t)
+  void LinearChainCRFModel::scale(std::vector<double> & in,  int t)
   {
     double sum = 0.0;
     for(int i = 0; i < (int)in.size(); i++)
@@ -179,7 +180,7 @@ namespace tops {
   }
 
 
-  void HiddenMarkovModel::trainBaumWelch(SequenceList & sample, int maxiterations, double diff_threshold)
+  void LinearChainCRFModel::trainBaumWelch(SequenceList & sample, int maxiterations, double diff_threshold)
   {
     int nstates = _states.size();
     int alphabet_size = alphabet()->size();
@@ -296,7 +297,7 @@ namespace tops {
 
   }
 
-  std::string HiddenMarkovModel::str () const
+  std::string LinearChainCRFModel::str () const
   {
     int nstates = _states.size();
     std::stringstream out;
@@ -347,7 +348,7 @@ namespace tops {
     return out.str();
   }
 
-  void HiddenMarkovModel::initialize(const ProbabilisticModelParameters & parameters) {
+  void LinearChainCRFModel::initialize(const ProbabilisticModelParameters & parameters) {
     ProbabilisticModelParameterValuePtr state_names = parameters.getMandatoryParameterValue("state_names");
     ProbabilisticModelParameterValuePtr observation_symbols = parameters.getMandatoryParameterValue("observation_symbols");
     ProbabilisticModelParameterValuePtr initial_probabilities = parameters.getMandatoryParameterValue("initial_probabilities");
@@ -452,7 +453,7 @@ namespace tops {
     setObservationSymbols(observations);
   }
 
-  ProbabilisticModelParameters HiddenMarkovModel::parameters() const {
+  ProbabilisticModelParameters LinearChainCRFModel::parameters() const {
     ProbabilisticModelParameters answer;
     int nstates = _states.size();
     answer.add("model_name", StringParameterValuePtr(new StringParameterValue(model_name().c_str())));
@@ -507,13 +508,13 @@ namespace tops {
   }
 
 
-  void HiddenMarkovModel::setInitialProbability(DiscreteIIDModelPtr initial) {
+  void LinearChainCRFModel::setInitialProbability(DiscreteIIDModelPtr initial) {
     _initial_probability = initial;
   }
-  void HiddenMarkovModel::setObservationSymbols(AlphabetPtr obs) {
+  void LinearChainCRFModel::setObservationSymbols(AlphabetPtr obs) {
     tops::ProbabilisticModel::setAlphabet(obs);
   }
-  void HiddenMarkovModel::setStates(std::vector<HMMStatePtr> states, AlphabetPtr state_names) {
+  void LinearChainCRFModel::setStates(std::vector<HMMStatePtr> states, AlphabetPtr state_names) {
     _states = states;
     _state_names = state_names;
   }
