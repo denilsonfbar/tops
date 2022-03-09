@@ -76,8 +76,9 @@ namespace tops {
       DiscreteIIDModelPtr _initial_probability;
       std::vector<double> _ctFactors;
       AlphabetPtr _state_names;
-      void scale(std::vector<double>& in, int t);
       std::vector<double> iterate(Sequence& obs);
+
+      void scale(std::vector<double>& in, int t);
   
     public:
       LinearChainCRFModel() {}
