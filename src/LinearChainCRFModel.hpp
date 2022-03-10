@@ -85,22 +85,24 @@ namespace tops {
       LinearChainCRFModel(std::vector <CRFStatePtr> states, DiscreteIIDModelPtr initial_probability, AlphabetPtr state_names, AlphabetPtr observation_symbols) : _states(states), _initial_probability(initial_probability), _state_names(state_names) {
         tops::ProbabilisticModel::setAlphabet(observation_symbols);
       }
-      virtual void initialize(const ProbabilisticModelParameters& par);
+      virtual ~LinearChainCRFModel() {}
+
       virtual ProbabilisticModelCreatorPtr getFactory() const {
         return LinearChainCRFModelCreatorPtr(new LinearChainCRFModelCreator());
       }
-      virtual ~LinearChainCRFModel() {}
 
+      virtual void initialize(const ProbabilisticModelParameters& par);
+      void setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names);
+      void setInitialProbability(DiscreteIIDModelPtr initial);
+      void setObservationSymbols(AlphabetPtr obs) ;
+
+      void setStates(std::vector<CRFStatePtr> states) { _states = states; }
       virtual void setState(int id, CRFStatePtr state) {
         if(_states.size() < _state_names->size())
           _states.resize(_state_names->size());
         _states[id] = state;
         state->setId(id);
       }
-      void setStates(std::vector<CRFStatePtr> states) { _states = states; }
-      void setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names);
-      void setInitialProbability(DiscreteIIDModelPtr initial);
-      void setObservationSymbols(AlphabetPtr obs) ;
 
       virtual DecodableModel* decodable() { return this; }
       virtual std::string model_name() const { return "LinearChainCRFModel"; }

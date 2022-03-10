@@ -143,7 +143,6 @@ namespace tops {
     setInitialProbability(pi);
     setObservationSymbols(observations);
   }
-
   void LinearChainCRFModel::setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names) {
     _states = states;
     _state_names = state_names;
