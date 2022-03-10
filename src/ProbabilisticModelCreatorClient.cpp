@@ -44,6 +44,7 @@
 #include "SimilarityBasedSequenceWeightingCreator.hpp"
 #include "MultipleSequentialModelCreator.hpp"
 #include "MaximalDependenceDecompositionCreator.hpp"
+#include "LinearChainCRFModelCreator.hpp"
 #include "util.hpp"
 
 
@@ -317,6 +318,7 @@ namespace tops
     _createModelCommand["MultipleSequentialModels"] = MultipleSequentialModelCreatorPtr( new MultipleSequentialModelCreator());
     _createModelCommand["MaximalDependenceDecomposition"] =
       MaximalDependenceDecompositionCreatorPtr(new MaximalDependenceDecompositionCreator());
+    _createModelCommand["LinearChainCRFModel"] = LinearChainCRFModelCreatorPtr(new LinearChainCRFModelCreator());
 
   }
 }
