@@ -142,6 +142,9 @@ namespace tops {
     setStates(state_list, states);
     setInitialProbability(pi);
     setObservationSymbols(observations);
+
+    configureCRF();
+
   }
   void LinearChainCRFModel::setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names) {
     _states = states;
@@ -319,7 +322,7 @@ namespace tops {
     return sum;
   }
 
-  double LinearChainCRFModel::viterbi(const Sequence& sequence, Sequence& path, Matrix& viterbi) const {
+  double LinearChainCRFModel::viterbiHMM(const Sequence& sequence, Sequence& path, Matrix& viterbi) const {
     typedef boost::numeric::ublas::matrix<int> MatrixInt;
     int nstates = _states.size();
     int size =  sequence.size();
@@ -469,6 +472,95 @@ namespace tops {
         last = P;
       }
     }
+  }
+
+
+
+
+  void LinearChainCRFModel::configureCRF(){
+    FeatureFunctionPtr hmm_emission_feature_function_ptr = HMMEmissionFeatureFunctionPtr(new HMMEmissionFeatureFunction(_states));
+    _features_functions.push_back(hmm_emission_feature_function_ptr);
+    _weights.push_back(1.0);
+
+    FeatureFunctionPtr hmm_transition_feature_function_ptr = HMMTransitionFeatureFunctionPtr(new HMMTransitionFeatureFunction(_states, _initial_probability));
+    _features_functions.push_back(hmm_transition_feature_function_ptr);
+    _weights.push_back(1.0);
+
+    std::cout << "LCCRF configured" << std::endl;
+  }
+
+  double LinearChainCRFModel::sumFeatures(int t, int y_t, int y_tm1, const Sequence& x) const {
+    double sum_weighted_factors = 0.0;
+    int K = _features_functions.size();
+    double factor, weighted_factor = 0.0;
+    for (int k = 0; k < K; k++){
+      factor = _features_functions[k]->ff(t, y_t, y_tm1, x);
+      weighted_factor = _weights[k] * factor;
+      sum_weighted_factors += weighted_factor;
+    }
+    return sum_weighted_factors;
+  }
+
+  double LinearChainCRFModel::viterbi(const Sequence& sequence, Sequence& path, Matrix& viterbi) const {
+
+    std::cout << "Viterbi called" << std::endl;
+
+    typedef boost::numeric::ublas::matrix<int> MatrixInt;
+    int nstates = _states.size();
+    int size =  sequence.size();
+
+    Matrix gamma (nstates, size+1);
+    MatrixInt psi (nstates, size+1);
+
+    // Inicialization:
+    for (int j = 0; j < nstates; j++)
+      gamma(j,0) = sumFeatures(0, j, -1, sequence);
+
+    std::cout << "Viterbi initialized" << std::endl;
+
+    // Induction:
+    for (int t = 1; t < size; t++){
+      for (int j = 0; j < nstates; j++){
+        std::vector<double> log_position_probs;
+        for (int i = 0; i < nstates; i++){
+
+          std::cout << "Internal loop" << std::endl;
+
+          log_position_probs.push_back(sumFeatures(t,j,i,sequence) + gamma(i,t-1));
+        }
+        auto it_max = std::max_element(std::begin(log_position_probs), std::end(log_position_probs));
+        gamma(j,t) = *it_max;
+        psi(j,t-1) = std::distance(std::begin(log_position_probs),it_max);
+      }
+    }
+
+    std::cout << "Viterbi induction ok" << std::endl;
+
+    // Termination:
+    for (int j = 0; j < nstates; j++)
+        psi(j,size-1) = j;
+
+
+    viterbi = gamma;
+    int L = size-1;
+    path.resize(L+1);
+    double max = gamma(0, L);
+    path[L] = 0;
+    for(int k = 1; k < nstates; k++)
+      if(max < gamma(k, L)) {
+        max = gamma(k,L);
+        path[L] = k;
+      }
+    for(int i = L; i >= 1; i--) {
+      path[i-1] = psi(path[i], i);
+    }
+    for(int i = 0; i < L; i++) {
+      path[i] = path[i+1];
+    }
+    for(int i = 0; i < L; i++) {
+      path[i] = getState(path[i+1])->getName()->id();
+    }
+    return max;
   }
 
 }

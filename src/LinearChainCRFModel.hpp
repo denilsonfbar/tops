@@ -69,6 +69,68 @@ namespace tops {
   };
   typedef boost::shared_ptr <CRFState> CRFStatePtr;
 
+
+
+class DLLEXPORT FeatureFunction {
+
+    private:
+      std::vector<CRFStatePtr> _states;
+      DiscreteIIDModelPtr _initial_probability;
+
+    public:
+      FeatureFunction() {}
+
+      virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
+        std::cerr << "Not implemented: FeatureFunction.ff()" << std::endl;
+        exit(-1);
+        return 0.0;
+      }
+
+  };
+  typedef boost::shared_ptr<FeatureFunction> FeatureFunctionPtr;
+
+
+  class DLLEXPORT HMMEmissionFeatureFunction : public FeatureFunction {
+
+    private:
+      std::vector<CRFStatePtr> _states;
+      DiscreteIIDModelPtr _initial_probability;
+
+    public:
+      HMMEmissionFeatureFunction(std::vector<CRFStatePtr> states) {
+        _states = states;
+      }
+
+      virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
+        return _states[y_t]->emission()->log_probability_of(x[t]);
+      }
+  };
+  typedef boost::shared_ptr<HMMEmissionFeatureFunction> HMMEmissionFeatureFunctionPtr;
+
+
+  class DLLEXPORT HMMTransitionFeatureFunction : public FeatureFunction {
+
+    private:
+      std::vector<CRFStatePtr> _states;
+      DiscreteIIDModelPtr _initial_probability;
+
+    public:
+      HMMTransitionFeatureFunction(std::vector<CRFStatePtr> states, DiscreteIIDModelPtr initial) {
+        _states = states;
+        _initial_probability = initial;
+      }
+
+      virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
+          if (t == 0){
+            return _initial_probability->log_probability_of(y_t);
+          } else {
+            return _states[y_tm1]->transitions()->log_probability_of(y_t);
+          }
+      }
+  };
+  typedef boost::shared_ptr<HMMTransitionFeatureFunction> HMMTransitionFeatureFunctionPtr;
+
+
   class DLLEXPORT LinearChainCRFModel : public DecodableModel {
   
     private:
@@ -79,6 +141,9 @@ namespace tops {
       std::vector<double> iterate(Sequence& obs);
 
       void scale(std::vector<double>& in, int t);
+
+      std::vector<FeatureFunctionPtr> _features_functions;
+      std::vector<double> _weights;
   
     public:
       LinearChainCRFModel() {}
@@ -127,9 +192,19 @@ namespace tops {
       virtual double backward(const Sequence& s, Matrix& beta) const;
 
       //! Viterbi algorithm
-      virtual double viterbi(const Sequence& s, Sequence& path, Matrix& gamma) const;
+      virtual double viterbiHMM(const Sequence& s, Sequence& path, Matrix& gamma) const;
     
       virtual void trainBaumWelch(SequenceList& training_set, int maxiterations, double diff) ;
+
+
+      void configureCRF();
+
+      //! Return the weighted sum of features functions results of a time t of a sequence x
+      double sumFeatures(int t, int y_t, int y_tm1, const Sequence& x) const;
+
+      //! Viterbi LCCRF algorithm
+      virtual double viterbi(const Sequence& s, Sequence& path, Matrix& gamma) const;
+
   };
   typedef boost::shared_ptr<LinearChainCRFModel> LinearChainCRFModelPtr;
 

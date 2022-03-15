@@ -15,3 +15,6 @@ src/doxygen.conf
 src/doxygen.conf.bak
 src/html/
 src/latex/
+.vscode/
+app/in.txt
+src/tests
