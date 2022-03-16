@@ -1,0 +1,83 @@
+branch hmm1
+
+model = 1
+if model == 1:  # Prof. André example
+
+    # Symbols index:    0  1
+    n_symbols = 2
+
+    # States index:     A: 0   B: 1
+    n_states = 2
+
+    # Initial probabilities
+    I = np.array([0.5,0.5])
+
+    # Transition matrix
+    # AA     AB
+    # BA     BB
+    A = np.array([[0.99,0.01], 
+                  [0.3 ,0.7 ]])
+
+    # Emission matrix
+    # A0    A1
+    # B0    B1
+    B = np.array([[0.5,0.5],
+                  [0.1,0.9]])
+
+if model == 1:
+    sequence = np.array([0,1,1])
+    # sequence = np.array([0,0,0,0,1,0,1,1,1,0])
+elif model == 3:
+    sequence = np.array([0,1,2,3,0,1,2,3])
+
+alpha_matrix = forward(sequence,n_states)
+beta_matrix = backward(sequence,n_states)
+posterior_decoding_path = posterior_decoding(alpha_matrix,beta_matrix)
+viterbi_decoding_path = viterbi_decoding(sequence,n_states)
+
+--- Results
+
+FORWARD
+Alpha matrix (log values):
+[[-1.38629436 -2.03065138 -2.65881371]
+ [-2.99573227 -3.38877486 -3.7967431 ]]
+Alpha matrix (real values):
+[[0.25       0.13125    0.07003125]
+ [0.05       0.03375    0.02244375]]
+Sequence probability:
+log:  -2.3808169412636193       real:  0.092475
+
+BACKWARD
+Beta matrix (log values):
+[[-2.74692098 -1.36062661 -0.68517901]
+ [-3.56312825 -0.56739598 -0.24846136]]
+Beta matrix (real values):
+[[0.064125 0.2565   0.504   ]
+ [0.02835  0.567    0.78    ]]
+Sequence probability:
+log:  -2.380816941263619        real:  0.09247500000000004
+
+POSTERIOR DECODING
+Posterior decoding matrix (log values):
+[[-0.36610403 -0.33501345 -0.27799677]
+ [-1.18231131 -1.25641928 -1.41592616]]
+Posterior decoding matrix (real values):
+[[0.69343066 0.71532847 0.75729927]
+ [0.30656934 0.28467153 0.24270073]]
+Path of states:
+[0 0 0]
+
+VITERBI DECODING
+Viterbi matrix (log values):
+[[-1.38629436 -2.08949188 -2.79268939]
+ [-2.99573227 -3.45776773 -3.91980319]]
+Viterbi matrix (real values):
+[[0.25       0.12375    0.06125625]
+ [0.05       0.0315     0.019845  ]]
+Paths of states: 
+[[0 0 0]
+ [1 1 1]]
+Best path: 
+[0 0 0]
+Best path probability:
+log:  -2.792689393946784        real:  0.06125625000000002

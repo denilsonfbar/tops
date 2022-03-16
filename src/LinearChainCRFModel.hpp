@@ -2,7 +2,7 @@
  *       LinearChainCRFModel.hpp
  *
  *       Copyright 2011 Andre Yoshiaki Kashiwabara <akashiwabara@usp.br>
- *                      �gor Bonadio <ibonadio@ime.usp.br>
+ *                      Ígor Bonadio <ibonadio@ime.usp.br>
  *                      Vitor Onuchic <vitoronuchic@gmail.com>
  *                      Alan Mitchell Durham <aland@usp.br>
  *                 2022 Denilson Fagundes Barbosa <denilsonfbar@gmail.com>
@@ -72,34 +72,26 @@ namespace tops {
 
 
 class DLLEXPORT FeatureFunction {
-
-    private:
-      std::vector<CRFStatePtr> _states;
-      DiscreteIIDModelPtr _initial_probability;
-
     public:
       FeatureFunction() {}
+      virtual ~FeatureFunction() {}
 
       virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
         std::cerr << "Not implemented: FeatureFunction.ff()" << std::endl;
         exit(-1);
         return 0.0;
       }
-
   };
   typedef boost::shared_ptr<FeatureFunction> FeatureFunctionPtr;
 
-
   class DLLEXPORT HMMEmissionFeatureFunction : public FeatureFunction {
-
     private:
       std::vector<CRFStatePtr> _states;
-      DiscreteIIDModelPtr _initial_probability;
-
     public:
       HMMEmissionFeatureFunction(std::vector<CRFStatePtr> states) {
         _states = states;
       }
+      virtual ~HMMEmissionFeatureFunction() {}
 
       virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
         return _states[y_t]->emission()->log_probability_of(x[t]);
@@ -107,18 +99,16 @@ class DLLEXPORT FeatureFunction {
   };
   typedef boost::shared_ptr<HMMEmissionFeatureFunction> HMMEmissionFeatureFunctionPtr;
 
-
   class DLLEXPORT HMMTransitionFeatureFunction : public FeatureFunction {
-
     private:
       std::vector<CRFStatePtr> _states;
       DiscreteIIDModelPtr _initial_probability;
-
     public:
       HMMTransitionFeatureFunction(std::vector<CRFStatePtr> states, DiscreteIIDModelPtr initial) {
         _states = states;
         _initial_probability = initial;
       }
+      virtual ~HMMTransitionFeatureFunction() {}
 
       virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
           if (t == 0){
@@ -129,7 +119,6 @@ class DLLEXPORT FeatureFunction {
       }
   };
   typedef boost::shared_ptr<HMMTransitionFeatureFunction> HMMTransitionFeatureFunctionPtr;
-
 
   class DLLEXPORT LinearChainCRFModel : public DecodableModel {
   
@@ -204,6 +193,8 @@ class DLLEXPORT FeatureFunction {
 
       //! Viterbi LCCRF algorithm
       virtual double viterbi(const Sequence& s, Sequence& path, Matrix& gamma) const;
+
+      void print_matrix(Matrix& m) const;
 
   };
   typedef boost::shared_ptr<LinearChainCRFModel> LinearChainCRFModelPtr;
