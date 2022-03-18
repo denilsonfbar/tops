@@ -25,6 +25,8 @@ MaximalDependenceDecompositionCreator
 TrainMaximalDependenceDecomposition
 LinearChainCRFModel
 LinearChainCRFModelCreator
+SemiMarkovCRFModel
+SemiMarkovCRFModelCreator
 )
 
 
