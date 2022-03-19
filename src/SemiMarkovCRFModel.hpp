@@ -30,6 +30,7 @@
 
 #include "ProbabilisticModel.hpp"
 #include "DecodableModel.hpp"
+#include "GeneralizedHiddenMarkovModel.hpp"
 #include "Sequence.hpp"
 #include "Alphabet.hpp"
 #include "ContextTree.hpp"
@@ -41,150 +42,95 @@
 
 namespace tops {
 
-  class DLLEXPORT CRFState {
-
-    protected:
-      int _id;
-      SymbolPtr _name;
-      DiscreteIIDModelPtr _emission;
-      DiscreteIIDModelPtr _transitions;
-  
-    public:
-      CRFState(){}
-      CRFState(int id, SymbolPtr name, DiscreteIIDModelPtr emission, DiscreteIIDModelPtr transitions) : _id(id), _name(name), _emission(emission), _transitions(transitions) {}
-    
-      void setId(int i) { _id = i; }
-      void setName(SymbolPtr name) { _name = name; }
-      void setEmissions(DiscreteIIDModelPtr e) { _emission = e; }
-      void setTransition(DiscreteIIDModelPtr t) { _transitions = t; }
-    
-      int getId() { return _id; }
-      SymbolPtr getName() const { return _name; }
-      DiscreteIIDModelPtr& emission() { return _emission; }
-      DiscreteIIDModelPtr& transitions() { return _transitions; }
-
-      bool isSilent() {
-        return (_emission == NULL);
-      }
-  };
-  typedef boost::shared_ptr <CRFState> CRFStatePtr;
-
-
-
-class DLLEXPORT FeatureFunction {
+  class DLLEXPORT FeatureFunction {
     public:
       FeatureFunction() {}
       virtual ~FeatureFunction() {}
 
-      virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
-        std::cerr << "Not implemented: FeatureFunction.ff()" << std::endl;
-        exit(-1);
-        return 0.0;
-      }
+      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) const = 0;
   };
   typedef boost::shared_ptr<FeatureFunction> FeatureFunctionPtr;
 
-  class DLLEXPORT HMMEmissionFeatureFunction : public FeatureFunction {
-    private:
-      std::vector<CRFStatePtr> _states;
-    public:
-      HMMEmissionFeatureFunction(std::vector<CRFStatePtr> states) {
-        _states = states;
-      }
-      virtual ~HMMEmissionFeatureFunction() {}
 
-      virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
-        return _states[y_t]->emission()->log_probability_of(x[t]);
+  class DLLEXPORT FeatureFunctionGHMMTransitions : public FeatureFunction {
+    private:
+      GeneralizedHiddenMarkovModelPtr _ghmm_model;
+    public:
+      FeatureFunctionGHMMTransitions(GeneralizedHiddenMarkovModelPtr ghmm_model) : _ghmm_model(ghmm_model) {}
+      virtual ~FeatureFunctionGHMMTransitions() {}
+
+      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) {
+          if (t == 0)
+            return _ghmm_model->getInitialProbabilities()->log_probability_of(y_t);
+          else
+            return _ghmm_model->getAllStates()[y_tm1]->transition()->log_probability_of(y_t);
       }
   };
-  typedef boost::shared_ptr<HMMEmissionFeatureFunction> HMMEmissionFeatureFunctionPtr;
+  typedef boost::shared_ptr<FeatureFunctionGHMMTransitions> FeatureFunctionGHMMTransitionsPtr;
 
-  class DLLEXPORT HMMTransitionFeatureFunction : public FeatureFunction {
+
+  class DLLEXPORT FeatureFunctionGHMMObservations : public FeatureFunction {
     private:
-      std::vector<CRFStatePtr> _states;
-      DiscreteIIDModelPtr _initial_probability;
+      GeneralizedHiddenMarkovModelPtr _ghmm_model;
     public:
-      HMMTransitionFeatureFunction(std::vector<CRFStatePtr> states, DiscreteIIDModelPtr initial) {
-        _states = states;
-        _initial_probability = initial;
-      }
-      virtual ~HMMTransitionFeatureFunction() {}
+      FeatureFunctionGHMMObservations(GeneralizedHiddenMarkovModelPtr ghmm_model) : _ghmm_model(ghmm_model) {}
+      virtual ~FeatureFunctionGHMMObservations() {}
 
-      virtual double ff(int t, int y_t, int y_tm1, const Sequence& x) {
-          if (t == 0){
-            return _initial_probability->log_probability_of(y_t);
-          } else {
-            return _states[y_tm1]->transitions()->log_probability_of(y_t);
-          }
+      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) {
+        return _ghmm_model->getAllStates()[y_t]->observation()->log_probability_of(x[t]);
       }
   };
-  typedef boost::shared_ptr<HMMTransitionFeatureFunction> HMMTransitionFeatureFunctionPtr;
+  typedef boost::shared_ptr<FeatureFunctionGHMMObservations> FeatureFunctionGHMMObservationsPtr;
+
+
+  class DLLEXPORT FeatureFunctionGHMMDurations : public FeatureFunction {
+    private:
+      GeneralizedHiddenMarkovModelPtr _ghmm_model;
+    public:
+      FeatureFunctionGHMMDurations(GeneralizedHiddenMarkovModelPtr ghmm_model) : _ghmm_model(ghmm_model) {}
+      virtual ~FeatureFunctionGHMMDurations() {}
+
+      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) {
+        int d = e_t - b_t + 1;
+        return _ghmm_model->getAllStates()[y_t]->duration_probability(d);
+      }
+  };
+  typedef boost::shared_ptr<FeatureFunctionGHMMDurations> FeatureFunctionGHMMDurationsPtr;
+
 
   class DLLEXPORT SemiMarkovCRFModel : public DecodableModel {
-  
     private:
-      std::vector <CRFStatePtr> _states;
-      DiscreteIIDModelPtr _initial_probability;
-      std::vector<double> _ctFactors;
-      AlphabetPtr _state_names;
-      std::vector<double> iterate(Sequence& obs);
-
-      void scale(std::vector<double>& in, int t);
-
       std::vector<FeatureFunctionPtr> _features_functions;
       std::vector<double> _weights;
   
     public:
       SemiMarkovCRFModel() {}
-      SemiMarkovCRFModel(std::vector <CRFStatePtr> states, DiscreteIIDModelPtr initial_probability, AlphabetPtr state_names, AlphabetPtr observation_symbols) : _states(states), _initial_probability(initial_probability), _state_names(state_names) {
-        tops::ProbabilisticModel::setAlphabet(observation_symbols);
-      }
       virtual ~SemiMarkovCRFModel() {}
 
       virtual ProbabilisticModelCreatorPtr getFactory() const {
         return SemiMarkovCRFModelCreatorPtr(new SemiMarkovCRFModelCreator());
       }
-
-      virtual void initialize(const ProbabilisticModelParameters& par);
-      void setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names);
-      void setInitialProbability(DiscreteIIDModelPtr initial);
-      void setObservationSymbols(AlphabetPtr obs) ;
-
-      void setStates(std::vector<CRFStatePtr> states) { _states = states; }
-      virtual void setState(int id, CRFStatePtr state) {
-        if(_states.size() < _state_names->size())
-          _states.resize(_state_names->size());
-        _states[id] = state;
-        state->setId(id);
-      }
-
       virtual DecodableModel* decodable() { return this; }
       virtual std::string model_name() const { return "SemiMarkovCRFModel"; }
-      virtual CRFStatePtr getState(int id) const { return _states[id]; }
-      virtual std::string getStateName(int state) const;
-      virtual AlphabetPtr getStateNames() const { return _state_names; }
+
       virtual ProbabilisticModelParameters parameters() const;
       virtual std::string str() const;
+      virtual std::string getStateName(int state) const;
+      virtual AlphabetPtr getStateNames() const;
+
+      virtual void initialize(const ProbabilisticModelParameters& par);
 
       //! Choose the observation given a state
       virtual Sequence& chooseObservation(Sequence& h, int i, int state) const;
-      
-      //! Choose a state
       virtual int chooseState(int state) const;
-      //! Choose first state
       virtual int chooseFirstState() const;
-    
-      //! Forward algorithm
+
       virtual double forward(const Sequence& s, Matrix& alpha) const;
-
-      //! Backward algorithm
       virtual double backward(const Sequence& s, Matrix& beta) const;
+      virtual double viterbi(const Sequence& s, Sequence& path, Matrix& gamma) const;
 
-      //! Viterbi algorithm
-      virtual double viterbiHMM(const Sequence& s, Sequence& path, Matrix& gamma) const;
-    
+/*
       virtual void trainBaumWelch(SequenceList& training_set, int maxiterations, double diff) ;
-
 
       void configureCRF();
 
@@ -195,6 +141,7 @@ class DLLEXPORT FeatureFunction {
       virtual double viterbi(const Sequence& s, Sequence& path, Matrix& gamma) const;
 
       void print_matrix(Matrix& m) const;
+*/
 
   };
   typedef boost::shared_ptr<SemiMarkovCRFModel> SemiMarkovCRFModelPtr;

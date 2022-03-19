@@ -37,18 +37,124 @@
 
 namespace tops {
 
-  void SemiMarkovCRFModel::scale(std::vector<double>& in,  int t) {
-    double sum = 0.0;
-    for(int i = 0; i < (int)in.size(); i++) {
-      sum += in[i];
+  ProbabilisticModelParameters SemiMarkovCRFModel::parameters() const {
+    ProbabilisticModelParameters answer;
+    /*
+    int nstates = _states.size();
+    answer.add("model_name", StringParameterValuePtr(new StringParameterValue(model_name().c_str())));
+    answer.add("state_names", _state_names->getParameterValue());
+    answer.add("observation_symbols", alphabet()->getParameterValue());
+    std::map <std::string, double> trans;
+    std::stringstream out;
+    out << getStateName(0) << "|" << getStateName(0) ;
+    trans[out.str()] =  exp(getState(0)->transitions()->log_probability_of(0)) ;
+    for(int i = 0; i < nstates; i++)
+      for(int j = 0; j < nstates; j++)
+        if((i != 0) || (j != 0)) {
+          std::stringstream out2;
+          out2 << getStateName(j) << "|" << getStateName(i) ;
+          trans[out2.str()] = exp(getState(i)->transitions()->log_probability_of(j));
+        }
+    answer.add("transitions", DoubleMapParameterValuePtr(new DoubleMapParameterValue(trans)));
+
+    std::map <std::string, double> emission;
+    std::stringstream out3;
+    out3 <<   alphabet()->getSymbol(0)->name() << "|" << getStateName(0) ;
+    emission[out3.str()] =  exp(getState(0)->emission()->log_probability_of(0));
+    for(int i = 0; i < nstates; i++)
+      for(int j = 0; j < (int)alphabet()->size(); j++)
+        if((i != 0) || (j != 0)){
+          std::stringstream out4;
+          out4 <<alphabet()->getSymbol(j)->name() << "|" <<  getStateName(i) ;
+          emission[out4.str()] =  exp(getState(i)->emission()->log_probability_of(j));
+        }
+    answer.add("emission_probabilities", DoubleMapParameterValuePtr(new DoubleMapParameterValue(emission)));
+    double sum = 0;
+    std::vector <double> probs;
+    probs.resize(nstates);
+    for(int i = 0; i < nstates; i++){
+      probs[i] = exp(_initial_probability->log_probability_of(i));
+      sum += probs[i];
     }
-    _ctFactors[t] = sum;
-    for(int i = 0; i < (int) in.size(); i++) {
-      in[i] = in[i]/sum;
+    std::map <std::string, double> initial;
+    std::stringstream out5;
+    out5 <<  getStateName(0);
+    initial[out5.str()] =  probs[0]/sum;
+    for(int i = 0; i < nstates; i++)
+      for(int j = 0; j < (int)alphabet()->size(); j++)
+        if((i != 0) || (j != 0)){
+          std::stringstream out6;
+          out6 << getStateName(i);
+          initial[out6.str()] = probs[i]/sum;
+        }
+    answer.add("initial_probabilities", DoubleMapParameterValuePtr(new DoubleMapParameterValue(initial)));
+    */
+    return answer;
+  }
+
+  std::string SemiMarkovCRFModel::str() const {
+    std::stringstream out;
+    /*
+    int nstates = _states.size();
+    out << "model_name = \"" << model_name() << "\"" << std::endl;
+    out << "state_names = (" ;
+    out << "\"" << getStateName(0) << "\"";
+    for(int i = 1; i < (int)getStateNames()->size(); i++)
+      out << ",\"" << getStateName(i) << "\"";
+    out << ")" << std::endl;
+
+    out << "observation_symbols = (" ;
+    out << "\"" << alphabet()->getSymbol(0)->name() << "\"";
+    for(int i = 1; i < (int)alphabet()->size(); i++)
+      out << ",\"" << alphabet()->getSymbol(i)->name() << "\"";
+    out << ")" << std::endl;
+
+    out << "transitions = (" ;
+    out << "\"" << getStateName(0) << "\" | \"" << getStateName(0) << "\": " << exp(getState(0)->transitions()->log_probability_of(0)) ;
+    for(int i = 0; i < nstates; i++)
+      for(int j = 0; j < nstates; j++)
+        if((i != 0) || (j != 0))
+          out << ";\n \"" << getStateName(j) << "\" | \"" << getStateName(i) << "\": " << exp(getState(i)->transitions()->log_probability_of(j));
+    out << ")" << std::endl;
+
+    out << "emission_probabilities = (" ;
+    out << "\"" <<  alphabet()->getSymbol(0)->name() << "\" | \"" << getStateName(0) << "\": " << exp(getState(0)->emission()->log_probability_of(0)) ;
+    for(int i = 0; i < nstates; i++)
+      for(int j = 0; j < (int)alphabet()->size(); j++)
+        if((i != 0) || (j != 0))
+          out << ";\n \"" << alphabet()->getSymbol(j)->name() << "\" | \"" <<  getStateName(i) << "\": " << exp(getState(i)->emission()->log_probability_of(j));
+    out << ")" << std::endl;
+
+    double sum = 0;
+    std::vector <double> probs;
+    probs.resize(nstates);
+    for(int i = 0; i < nstates; i++){
+      probs[i] = exp(_initial_probability->log_probability_of(i));
+      sum += probs[i];
     }
+
+    out << "initial_probabilities = (";
+    out << "\"" << getStateName(0) << "\":  " << probs[0]/sum ;
+    for(int i = 1; i < nstates; i++)
+      out << ";\n \"" << getStateName(i) << "\": " << probs[i]/sum;
+    out << ")" << std::endl;
+    */
+    return out.str();
+  }
+
+  std::string SemiMarkovCRFModel::getStateName(int state) const {
+    // return getState(state)->getName()->name();
+    return "";
+  }
+
+  AlphabetPtr SemiMarkovCRFModel::getStateNames() const {
+    // return _state_names;
+    AlphabetPtr ret;
+    return ret;
   }
 
   void SemiMarkovCRFModel::initialize(const ProbabilisticModelParameters& parameters) {
+    /*
     ProbabilisticModelParameterValuePtr state_names = parameters.getMandatoryParameterValue("state_names");
     ProbabilisticModelParameterValuePtr observation_symbols = parameters.getMandatoryParameterValue("observation_symbols");
     ProbabilisticModelParameterValuePtr initial_probabilities = parameters.getMandatoryParameterValue("initial_probabilities");
@@ -145,135 +251,28 @@ namespace tops {
 
     configureCRF();
 
-  }
-  void SemiMarkovCRFModel::setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names) {
-    _states = states;
-    _state_names = state_names;
-  }
-  void SemiMarkovCRFModel::setInitialProbability(DiscreteIIDModelPtr initial) {
-    _initial_probability = initial;
-  }
-  void SemiMarkovCRFModel::setObservationSymbols(AlphabetPtr obs) {
-    tops::ProbabilisticModel::setAlphabet(obs);
-  }
+    */
 
-  std::string SemiMarkovCRFModel::getStateName(int state) const {
-    return getState(state)->getName()->name();
-  }
-  ProbabilisticModelParameters SemiMarkovCRFModel::parameters() const {
-    ProbabilisticModelParameters answer;
-    int nstates = _states.size();
-    answer.add("model_name", StringParameterValuePtr(new StringParameterValue(model_name().c_str())));
-    answer.add("state_names", _state_names->getParameterValue());
-    answer.add("observation_symbols", alphabet()->getParameterValue());
-    std::map <std::string, double> trans;
-    std::stringstream out;
-    out << getStateName(0) << "|" << getStateName(0) ;
-    trans[out.str()] =  exp(getState(0)->transitions()->log_probability_of(0)) ;
-    for(int i = 0; i < nstates; i++)
-      for(int j = 0; j < nstates; j++)
-        if((i != 0) || (j != 0)) {
-          std::stringstream out2;
-          out2 << getStateName(j) << "|" << getStateName(i) ;
-          trans[out2.str()] = exp(getState(i)->transitions()->log_probability_of(j));
-        }
-    answer.add("transitions", DoubleMapParameterValuePtr(new DoubleMapParameterValue(trans)));
-
-    std::map <std::string, double> emission;
-    std::stringstream out3;
-    out3 <<   alphabet()->getSymbol(0)->name() << "|" << getStateName(0) ;
-    emission[out3.str()] =  exp(getState(0)->emission()->log_probability_of(0));
-    for(int i = 0; i < nstates; i++)
-      for(int j = 0; j < (int)alphabet()->size(); j++)
-        if((i != 0) || (j != 0)){
-          std::stringstream out4;
-          out4 <<alphabet()->getSymbol(j)->name() << "|" <<  getStateName(i) ;
-          emission[out4.str()] =  exp(getState(i)->emission()->log_probability_of(j));
-        }
-    answer.add("emission_probabilities", DoubleMapParameterValuePtr(new DoubleMapParameterValue(emission)));
-    double sum = 0;
-    std::vector <double> probs;
-    probs.resize(nstates);
-    for(int i = 0; i < nstates; i++){
-      probs[i] = exp(_initial_probability->log_probability_of(i));
-      sum += probs[i];
-    }
-    std::map <std::string, double> initial;
-    std::stringstream out5;
-    out5 <<  getStateName(0);
-    initial[out5.str()] =  probs[0]/sum;
-    for(int i = 0; i < nstates; i++)
-      for(int j = 0; j < (int)alphabet()->size(); j++)
-        if((i != 0) || (j != 0)){
-          std::stringstream out6;
-          out6 << getStateName(i);
-          initial[out6.str()] = probs[i]/sum;
-        }
-    answer.add("initial_probabilities", DoubleMapParameterValuePtr(new DoubleMapParameterValue(initial)));
-    return answer;
-  }
-  std::string SemiMarkovCRFModel::str() const {
-    int nstates = _states.size();
-    std::stringstream out;
-    out << "model_name = \"" << model_name() << "\"" << std::endl;
-    out << "state_names = (" ;
-    out << "\"" << getStateName(0) << "\"";
-    for(int i = 1; i < (int)getStateNames()->size(); i++)
-      out << ",\"" << getStateName(i) << "\"";
-    out << ")" << std::endl;
-
-    out << "observation_symbols = (" ;
-    out << "\"" << alphabet()->getSymbol(0)->name() << "\"";
-    for(int i = 1; i < (int)alphabet()->size(); i++)
-      out << ",\"" << alphabet()->getSymbol(i)->name() << "\"";
-    out << ")" << std::endl;
-
-    out << "transitions = (" ;
-    out << "\"" << getStateName(0) << "\" | \"" << getStateName(0) << "\": " << exp(getState(0)->transitions()->log_probability_of(0)) ;
-    for(int i = 0; i < nstates; i++)
-      for(int j = 0; j < nstates; j++)
-        if((i != 0) || (j != 0))
-          out << ";\n \"" << getStateName(j) << "\" | \"" << getStateName(i) << "\": " << exp(getState(i)->transitions()->log_probability_of(j));
-    out << ")" << std::endl;
-
-    out << "emission_probabilities = (" ;
-    out << "\"" <<  alphabet()->getSymbol(0)->name() << "\" | \"" << getStateName(0) << "\": " << exp(getState(0)->emission()->log_probability_of(0)) ;
-    for(int i = 0; i < nstates; i++)
-      for(int j = 0; j < (int)alphabet()->size(); j++)
-        if((i != 0) || (j != 0))
-          out << ";\n \"" << alphabet()->getSymbol(j)->name() << "\" | \"" <<  getStateName(i) << "\": " << exp(getState(i)->emission()->log_probability_of(j));
-    out << ")" << std::endl;
-
-    double sum = 0;
-    std::vector <double> probs;
-    probs.resize(nstates);
-    for(int i = 0; i < nstates; i++){
-      probs[i] = exp(_initial_probability->log_probability_of(i));
-      sum += probs[i];
-    }
-
-    out << "initial_probabilities = (";
-    out << "\"" << getStateName(0) << "\":  " << probs[0]/sum ;
-    for(int i = 1; i < nstates; i++)
-      out << ";\n \"" << getStateName(i) << "\": " << probs[i]/sum;
-    out << ")" << std::endl;
-    return out.str();
   }
 
   Sequence& SemiMarkovCRFModel::chooseObservation(Sequence& h, int i, int state) const {
-    if((state >= 0) && (!getState(state)->isSilent()) )
-      return getState(state)->emission()->chooseWithHistory(h,i,1);
+    // if((state >= 0) && (!getState(state)->isSilent()) )
+    //   return getState(state)->emission()->chooseWithHistory(h,i,1);
     return h;
   }
 
   int SemiMarkovCRFModel::chooseState(int state) const {
-    return getState(state)->transitions()->choose();
+    // return getState(state)->transitions()->choose();
+    return -1;
   }
+
   int SemiMarkovCRFModel::chooseFirstState() const {
-    return _initial_probability->choose();
+    // return _initial_probability->choose();
+    return -1;
   }
 
   double SemiMarkovCRFModel::forward(const Sequence& sequence, Matrix& a) const {
+    /*
     int nstates = _states.size();
     int size = sequence.size();
     Matrix alpha (nstates, size);
@@ -297,9 +296,12 @@ namespace tops {
     for(int k = 1; k < nstates; k++)
       sum = log_sum_2(sum, alpha(k, size-1));
     return sum;
+    */
+    return -1.0;
   }
 
   double SemiMarkovCRFModel::backward(const Sequence& sequence, Matrix& b) const {
+    /*
     int nstates = _states.size();
     int size = sequence.size();
     Matrix beta (nstates, size);
@@ -320,41 +322,44 @@ namespace tops {
     for(int k = 0; k < nstates; k++)
       sum = log_sum_2(sum, beta(k, 0) + _initial_probability->log_probability_of(k) + getState(k)->emission()->log_probability_of(sequence[0]));
     return sum;
+    */
+   return -1.0;
   }
 
-  double SemiMarkovCRFModel::viterbiHMM(const Sequence& sequence, Sequence& path, Matrix& viterbi) const {
+  double SemiMarkovCRFModel::viterbi(const Sequence& sequence, Sequence& path, Matrix& viterbi) const {
+    /*
     typedef boost::numeric::ublas::matrix<int> MatrixInt;
     int nstates = _states.size();
     int size =  sequence.size();
 
-    Matrix gamma (nstates, size+1);
-    MatrixInt psi (nstates, size+1);
+    Matrix gamma(nstates,size+1);
+    MatrixInt psi(nstates,size+1);
 
-    for(int k = 0; k < nstates; k++)
-      gamma(k,0) = _initial_probability->log_probability_of(k) + getState(k)->emission()->log_probability_of(sequence[0]);
+    for (int j = 0; j < nstates; j++)
+      gamma(j,0) = sumFeatures(0,j,-1,sequence);
 
-    for (int i = 0; i < size-1; i++) {
-      for(int k = 0; k < nstates; k++) {
-        gamma(k,i+1) =  gamma(0, i) +getState(0)->transitions()->log_probability_of(k);
-        psi(k,i+1) = 0;
-        for(int p = 1; p < nstates; p++) { // p is the predecessor
-          double v = gamma(p, i) + getState(p)->transitions()->log_probability_of(k); //
-          if(gamma(k, i+1) < v) {
-            gamma(k, i+1) = v;
-            psi(k,i+1) = p;
-          }
+    for (int t = 1; t < size; t++){
+      for (int j = 0; j < nstates; j++){
+        std::vector<double> log_position_probs;
+        for (int i = 0; i < nstates; i++){
+          log_position_probs.push_back(sumFeatures(t,j,i,sequence) + gamma(i,t-1));
         }
-        gamma(k,i+1) += getState(k)->emission()->log_probability_of(sequence[i+1]);
+        auto it_max = std::max_element(std::begin(log_position_probs),std::end(log_position_probs));
+        gamma(j,t) = *it_max;
+        psi(j,t-1) = std::distance(std::begin(log_position_probs),it_max);
       }
     }
+
+    for (int j = 0; j < nstates; j++)
+        psi(j,size-1) = j;
 
     viterbi = gamma;
     int L = size-1;
     path.resize(L+1);
-    double max = gamma(0, L);
+    double max = gamma(0,L);
     path[L] = 0;
     for(int k = 1; k < nstates; k++)
-      if(max < gamma(k, L)) {
+      if(max < gamma(k,L)) {
         max = gamma(k,L);
         path[L] = k;
       }
@@ -367,7 +372,35 @@ namespace tops {
     for(int i = 0; i < L; i++) {
       path[i] = getState(path[i+1])->getName()->id();
     }
+
+    print_matrix(viterbi);
+
     return max;
+    */
+    return -1.0;
+  }
+
+/*
+  void SemiMarkovCRFModel::scale(std::vector<double>& in,  int t) {
+    double sum = 0.0;
+    for(int i = 0; i < (int)in.size(); i++) {
+      sum += in[i];
+    }
+    _ctFactors[t] = sum;
+    for(int i = 0; i < (int) in.size(); i++) {
+      in[i] = in[i]/sum;
+    }
+  }
+
+  void SemiMarkovCRFModel::setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names) {
+    _states = states;
+    _state_names = state_names;
+  }
+  void SemiMarkovCRFModel::setInitialProbability(DiscreteIIDModelPtr initial) {
+    _initial_probability = initial;
+  }
+  void SemiMarkovCRFModel::setObservationSymbols(AlphabetPtr obs) {
+    tops::ProbabilisticModel::setAlphabet(obs);
   }
 
   void SemiMarkovCRFModel::trainBaumWelch(SequenceList& sample, int maxiterations, double diff_threshold) {
@@ -500,58 +533,6 @@ namespace tops {
     return sum_weighted_factors;
   }
 
-  double SemiMarkovCRFModel::viterbi(const Sequence& sequence, Sequence& path, Matrix& viterbi) const {
-
-    typedef boost::numeric::ublas::matrix<int> MatrixInt;
-    int nstates = _states.size();
-    int size =  sequence.size();
-
-    Matrix gamma(nstates,size+1);
-    MatrixInt psi(nstates,size+1);
-
-    for (int j = 0; j < nstates; j++)
-      gamma(j,0) = sumFeatures(0,j,-1,sequence);
-
-    for (int t = 1; t < size; t++){
-      for (int j = 0; j < nstates; j++){
-        std::vector<double> log_position_probs;
-        for (int i = 0; i < nstates; i++){
-          log_position_probs.push_back(sumFeatures(t,j,i,sequence) + gamma(i,t-1));
-        }
-        auto it_max = std::max_element(std::begin(log_position_probs),std::end(log_position_probs));
-        gamma(j,t) = *it_max;
-        psi(j,t-1) = std::distance(std::begin(log_position_probs),it_max);
-      }
-    }
-
-    for (int j = 0; j < nstates; j++)
-        psi(j,size-1) = j;
-
-    viterbi = gamma;
-    int L = size-1;
-    path.resize(L+1);
-    double max = gamma(0,L);
-    path[L] = 0;
-    for(int k = 1; k < nstates; k++)
-      if(max < gamma(k,L)) {
-        max = gamma(k,L);
-        path[L] = k;
-      }
-    for(int i = L; i >= 1; i--) {
-      path[i-1] = psi(path[i], i);
-    }
-    for(int i = 0; i < L; i++) {
-      path[i] = path[i+1];
-    }
-    for(int i = 0; i < L; i++) {
-      path[i] = getState(path[i+1])->getName()->id();
-    }
-
-    print_matrix(viterbi);
-
-    return max;
-  }
-
   void SemiMarkovCRFModel::print_matrix(Matrix& m) const {
     std::cout << "Log values:" << std::endl;
     for(unsigned i = 0; i < m.size1(); ++i) {
@@ -568,5 +549,7 @@ namespace tops {
         std::cout << std::endl;
     }
   }
+
+  */
 
 }

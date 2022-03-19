@@ -2,7 +2,7 @@
  *       GeneralizedHiddenMarkovModel.hpp
  *
  *       Copyright 2011 Andre Yoshiaki Kashiwabara <akashiwabara@usp.br>
- *                      Ígor Bonadio <ibonadio@ime.usp.br>
+ *                      ï¿½gor Bonadio <ibonadio@ime.usp.br>
  *                      Vitor Onuchic <vitoronuchic@gmail.com>
  *                      Alan Mitchell Durham <aland@usp.br>
  *
@@ -153,6 +153,7 @@ namespace tops {
     virtual ProbabilisticModelParameters parameters() const ;
     virtual void initialize(const ProbabilisticModelParameters & p) ;
 
+    virtual GHMMStates getAllStates() const { return _all_states; }
 
   };
 
