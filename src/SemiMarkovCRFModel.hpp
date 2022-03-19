@@ -59,7 +59,7 @@ namespace tops {
       FeatureFunctionGHMMTransitions(GeneralizedHiddenMarkovModelPtr ghmm_model) : _ghmm_model(ghmm_model) {}
       virtual ~FeatureFunctionGHMMTransitions() {}
 
-      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) {
+      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) const {
           if (t == 0)
             return _ghmm_model->getInitialProbabilities()->log_probability_of(y_t);
           else
@@ -76,7 +76,7 @@ namespace tops {
       FeatureFunctionGHMMObservations(GeneralizedHiddenMarkovModelPtr ghmm_model) : _ghmm_model(ghmm_model) {}
       virtual ~FeatureFunctionGHMMObservations() {}
 
-      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) {
+      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) const {
         return _ghmm_model->getAllStates()[y_t]->observation()->log_probability_of(x[t]);
       }
   };
@@ -90,7 +90,7 @@ namespace tops {
       FeatureFunctionGHMMDurations(GeneralizedHiddenMarkovModelPtr ghmm_model) : _ghmm_model(ghmm_model) {}
       virtual ~FeatureFunctionGHMMDurations() {}
 
-      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) {
+      virtual double ff(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) const {
         int d = e_t - b_t + 1;
         return _ghmm_model->getAllStates()[y_t]->duration_probability(d);
       }
@@ -120,6 +120,9 @@ namespace tops {
 
       virtual void initialize(const ProbabilisticModelParameters& par);
 
+      //! Return the weighted sum of features functions results of a time t of a sequence x
+      double sumFeatures(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) const;
+
       //! Choose the observation given a state
       virtual Sequence& chooseObservation(Sequence& h, int i, int state) const;
       virtual int chooseState(int state) const;
@@ -129,20 +132,7 @@ namespace tops {
       virtual double backward(const Sequence& s, Matrix& beta) const;
       virtual double viterbi(const Sequence& s, Sequence& path, Matrix& gamma) const;
 
-/*
-      virtual void trainBaumWelch(SequenceList& training_set, int maxiterations, double diff) ;
-
-      void configureCRF();
-
-      //! Return the weighted sum of features functions results of a time t of a sequence x
-      double sumFeatures(int t, int y_t, int y_tm1, const Sequence& x) const;
-
-      //! Viterbi LCCRF algorithm
-      virtual double viterbi(const Sequence& s, Sequence& path, Matrix& gamma) const;
-
       void print_matrix(Matrix& m) const;
-*/
-
   };
   typedef boost::shared_ptr<SemiMarkovCRFModel> SemiMarkovCRFModelPtr;
 

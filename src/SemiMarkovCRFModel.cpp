@@ -154,6 +154,23 @@ namespace tops {
   }
 
   void SemiMarkovCRFModel::initialize(const ProbabilisticModelParameters& parameters) {
+
+    GeneralizedHiddenMarkovModelPtr ghmm_model = GeneralizedHiddenMarkovModelPtr(new GeneralizedHiddenMarkovModel());
+
+    
+
+    FeatureFunctionPtr feature_function_ghmm_transitions = FeatureFunctionGHMMTransitionsPtr(new FeatureFunctionGHMMTransitions(ghmm_model));
+    _features_functions.push_back(feature_function_ghmm_transitions);
+    _weights.push_back(1.0);
+
+    FeatureFunctionPtr feature_function_ghmm_observations = FeatureFunctionGHMMObservationsPtr(new FeatureFunctionGHMMObservations(ghmm_model));
+    _features_functions.push_back(feature_function_ghmm_observations);
+    _weights.push_back(1.0);
+
+    FeatureFunctionPtr feature_function_ghmm_durations = FeatureFunctionGHMMDurationsPtr(new FeatureFunctionGHMMDurations(ghmm_model));
+    _features_functions.push_back(feature_function_ghmm_durations);
+    _weights.push_back(1.0);
+
     /*
     ProbabilisticModelParameterValuePtr state_names = parameters.getMandatoryParameterValue("state_names");
     ProbabilisticModelParameterValuePtr observation_symbols = parameters.getMandatoryParameterValue("observation_symbols");
@@ -253,6 +270,18 @@ namespace tops {
 
     */
 
+  }
+
+  double SemiMarkovCRFModel::sumFeatures(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) const {
+    double sum_weighted_factors = 0.0;
+    int K = _features_functions.size();
+    double factor, weighted_factor = 0.0;
+    for (int k = 0; k < K; k++){
+      factor = _features_functions[k]->ff(y_tm1, t, b_t, e_t, y_t, x);
+      weighted_factor = _weights[k] * factor;
+      sum_weighted_factors += weighted_factor;
+    }
+    return sum_weighted_factors;
   }
 
   Sequence& SemiMarkovCRFModel::chooseObservation(Sequence& h, int i, int state) const {
@@ -380,6 +409,23 @@ namespace tops {
     return -1.0;
   }
 
+  void SemiMarkovCRFModel::print_matrix(Matrix& m) const {
+    std::cout << "Log values:" << std::endl;
+    for(unsigned i = 0; i < m.size1(); ++i) {
+      for(unsigned j = 0; j < m.size2(); ++j) {
+            std::cout << m(i,j) << "\t";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "Real values:" << std::endl;
+    for(unsigned i = 0; i < m.size1(); ++i) {
+      for(unsigned j = 0; j < m.size2(); ++j) {
+            std::cout << exp(m(i,j)) << "\t";
+        }
+        std::cout << std::endl;
+    }
+  }
+
 /*
   void SemiMarkovCRFModel::scale(std::vector<double>& in,  int t) {
     double sum = 0.0;
@@ -504,49 +550,6 @@ namespace tops {
 
         last = P;
       }
-    }
-  }
-
-
-
-
-  void SemiMarkovCRFModel::configureCRF(){
-
-    FeatureFunctionPtr hmm_emission_feature_function_ptr = HMMEmissionFeatureFunctionPtr(new HMMEmissionFeatureFunction(_states));
-    _features_functions.push_back(hmm_emission_feature_function_ptr);
-    _weights.push_back(1.0);
-
-    FeatureFunctionPtr hmm_transition_feature_function_ptr = HMMTransitionFeatureFunctionPtr(new HMMTransitionFeatureFunction(_states, _initial_probability));
-    _features_functions.push_back(hmm_transition_feature_function_ptr);
-    _weights.push_back(1.0);
-  }
-
-  double SemiMarkovCRFModel::sumFeatures(int t, int y_t, int y_tm1, const Sequence& x) const {
-    double sum_weighted_factors = 0.0;
-    int K = _features_functions.size();
-    double factor, weighted_factor = 0.0;
-    for (int k = 0; k < K; k++){
-      factor = _features_functions[k]->ff(t, y_t, y_tm1, x);
-      weighted_factor = _weights[k] * factor;
-      sum_weighted_factors += weighted_factor;
-    }
-    return sum_weighted_factors;
-  }
-
-  void SemiMarkovCRFModel::print_matrix(Matrix& m) const {
-    std::cout << "Log values:" << std::endl;
-    for(unsigned i = 0; i < m.size1(); ++i) {
-      for(unsigned j = 0; j < m.size2(); ++j) {
-            std::cout << m(i,j) << "\t";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << "Real values:" << std::endl;
-    for(unsigned i = 0; i < m.size1(); ++i) {
-      for(unsigned j = 0; j < m.size2(); ++j) {
-            std::cout << exp(m(i,j)) << "\t";
-        }
-        std::cout << std::endl;
     }
   }
 
