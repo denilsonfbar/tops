@@ -1,0 +1,3 @@
+model_name="SemiMarkovCRFModel"
+state_names = ("NonCoding", "Coding", "Start", "Stop")
+observation_symbols = ("A", "C", "G", "T")

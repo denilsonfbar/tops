@@ -1,0 +1,1 @@
+model/ghmm.model_0:	G C A G G G T A C G G C C C T C A G G T A A C C A G A T C G T T T T T A C A C G A C A G C T C T C A T A C A G C T A G G A T A A T G C T A C C G C C C T C C G T G A C T G C T A G A C T G A C G G T G T

@@ -1,0 +1,6 @@
+Run in tops/examples/bacteria_ghmm:
+
+../../app/tops-viterbi_decoding -m ../../tests/smcrf/model1.cnf < ../../tests/smcrf/model1-in1.txt > ../../tests/smcrf/model1-in1-out-verb.txt
+
+../../app/tops-viterbi_decoding -m ../../tests/smcrf/model1.cnf < ../../tests/smcrf/model1-in2.txt > ../../tests/smcrf/model1-in2-out.txt
+

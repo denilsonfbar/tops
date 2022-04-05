@@ -148,17 +148,30 @@ namespace tops {
   }
 
   AlphabetPtr SemiMarkovCRFModel::getStateNames() const {
-    // return _state_names;
-    AlphabetPtr ret;
-    return ret;
+    return _state_names;
   }
+
 
   void SemiMarkovCRFModel::initialize(const ProbabilisticModelParameters& parameters) {
 
-    GeneralizedHiddenMarkovModelPtr ghmm_model = GeneralizedHiddenMarkovModelPtr(new GeneralizedHiddenMarkovModel());
+    ProbabilisticModelParameterValuePtr state_names = parameters.getMandatoryParameterValue("state_names");
+    ProbabilisticModelParameterValuePtr observation_symbols = parameters.getMandatoryParameterValue("observation_symbols");
+    AlphabetPtr states = AlphabetPtr(new Alphabet());
+    AlphabetPtr observations = AlphabetPtr(new Alphabet());
+    states->initializeFromVector(state_names->getStringVector());
+    observations->initializeFromVector(observation_symbols->getStringVector());
+    setStates(states);
+    setObservationSymbols(observations);
 
-    
+    // Creating a GHMM model for extract features:
+    string model_name = "model/ghmm.model";
+    ProbabilisticModelCreatorClient creator;
+    ProbabilisticModelPtr model = creator.create(model_name);
+    DecodableModelPtr dec_model = boost::dynamic_pointer_cast<DecodableModel> (model);
+    GeneralizedHiddenMarkovModelPtr ghmm_model = boost::dynamic_pointer_cast<GeneralizedHiddenMarkovModel> (dec_model);
+    // std::cout << ghmm_model->str();
 
+    // Setup features functions:
     FeatureFunctionPtr feature_function_ghmm_transitions = FeatureFunctionGHMMTransitionsPtr(new FeatureFunctionGHMMTransitions(ghmm_model));
     _features_functions.push_back(feature_function_ghmm_transitions);
     _weights.push_back(1.0);
@@ -170,119 +183,148 @@ namespace tops {
     FeatureFunctionPtr feature_function_ghmm_durations = FeatureFunctionGHMMDurationsPtr(new FeatureFunctionGHMMDurations(ghmm_model));
     _features_functions.push_back(feature_function_ghmm_durations);
     _weights.push_back(1.0);
+  }
 
-    /*
-    ProbabilisticModelParameterValuePtr state_names = parameters.getMandatoryParameterValue("state_names");
-    ProbabilisticModelParameterValuePtr observation_symbols = parameters.getMandatoryParameterValue("observation_symbols");
-    ProbabilisticModelParameterValuePtr initial_probabilities = parameters.getMandatoryParameterValue("initial_probabilities");
-    ProbabilisticModelParameterValuePtr transitions = parameters.getMandatoryParameterValue("transitions");
-    ProbabilisticModelParameterValuePtr emissions = parameters.getMandatoryParameterValue("emission_probabilities");
+   void SemiMarkovCRFModel::setStates(AlphabetPtr state_names) {
+    _n_states = state_names->size();
+    _state_names = state_names;
+  }
 
-    std::vector<CRFStatePtr> state_list;
-    AlphabetPtr states = AlphabetPtr(new Alphabet());
-    AlphabetPtr observations = AlphabetPtr(new Alphabet());
-    states->initializeFromVector(state_names->getStringVector());
-    observations->initializeFromVector(observation_symbols->getStringVector());
-
-    std::map<std::string,double>::const_iterator it;
-    std::map<std::string,std::vector<double> >::const_iterator it2;
-
-    DiscreteIIDModelPtr pi = DiscreteIIDModelPtr(new DiscreteIIDModel());
-    pi->initializeFromMap(initial_probabilities->getDoubleMap(), states);
-
-    std::map<std::string,double> emisspar = emissions->getDoubleMap();
-    std::map<std::string,double> transpar = transitions->getDoubleMap();
-
-    std::map<std::string,DoubleVector> emiss;
-    std::map<std::string,DoubleVector> trans;
-
-    for(it = emisspar.begin(); it != emisspar.end(); it++) {
-      std::vector<std::string> splited;
-      boost::regex separator("\\s*\\|\\s*");
-      split_regex(it->first, splited, separator);
-      if(splited.size() == 1)
-        splited.push_back("");
-      std::string symbol(splited[0]);
-      std::string state(splited[1]);
-
-      std::map<std::string,DoubleVector>::iterator eit;
-      eit = emiss.find(state);
-      if(eit == emiss.end()) {
-          int id = observations->getSymbol(symbol)->id();
-          emiss[state].resize(observations->size());
-          if((id >= 0) && (id < (int)(emiss[state]).size()))
-            (emiss[state])[id] = it->second;
-      }
-      else {
-        int id = observations->getSymbol(symbol)->id();
-        if((id >= 0) && (id < (int)(eit->second).size()))
-          (eit->second)[id] = it->second;
-      }
-    }
-
-    for(it = transpar.begin(); it != transpar.end(); it++) {
-      std::vector<std::string> splited;
-      boost::regex separator("\\|");
-      split_regex(it->first, splited, separator);
-      if(splited.size() == 1)
-        splited.push_back("");
-
-      std::string to(splited[0]);
-      std::string from(splited[1]);
-      if(trans.find(from) == trans.end()) {
-          int id = states->getSymbol(to)->id();
-          DoubleVector probs;
-          probs.resize(states->size());
-          trans[from]=probs;
-          if(id < (int)trans[from].size())
-            trans[from][id] = it->second;
-      }
-      else {
-        int id = states->getSymbol(to)->id();
-        if(id < (int)trans[from].size())
-          trans[from][id] = it->second;
-      }
-    }
-
-    for(unsigned int i = 0; i < states->size(); i++) {
-      SymbolPtr state_name = states->getSymbol(i);
-      DiscreteIIDModelPtr e ;
-      DiscreteIIDModelPtr t ;
-      it2 = emiss.find(state_name->name());
-      if(it2 != emiss.end())
-        e = DiscreteIIDModelPtr(new DiscreteIIDModel(it2->second));
-      it2 = trans.find(state_name->name());
-      if(it2 != trans.end())
-        t = DiscreteIIDModelPtr(new DiscreteIIDModel(it2->second));
-      else {
-        std::cerr << "ERROR: Could not configure the state " << state_name->name() << "!" << std::endl;
-        exit(-1);
-      }
-      CRFStatePtr statePtr = CRFStatePtr(new CRFState(state_list.size(), state_name, e, t));
-      state_list.push_back(statePtr);
-    }
-
-    setStates(state_list, states);
-    setInitialProbability(pi);
-    setObservationSymbols(observations);
-
-    configureCRF();
-
-    */
-
+  void SemiMarkovCRFModel::setObservationSymbols(AlphabetPtr obs) {
+    tops::ProbabilisticModel::setAlphabet(obs);
   }
 
   double SemiMarkovCRFModel::sumFeatures(int y_tm1, int t, int b_t, int e_t, int y_t, const Sequence& x) const {
-    double sum_weighted_factors = 0.0;
+
+    double factor, weighted_factor, sum_weighted_factors = 0.0;
     int K = _features_functions.size();
-    double factor, weighted_factor = 0.0;
+
     for (int k = 0; k < K; k++){
       factor = _features_functions[k]->ff(y_tm1, t, b_t, e_t, y_t, x);
       weighted_factor = _weights[k] * factor;
       sum_weighted_factors += weighted_factor;
     }
+
+    #if VERBOSE_DETAILS
+        std::cout << "Sum:\tlog: " << sum_weighted_factors << "\treal: " << exp(sum_weighted_factors) << std::endl;
+    #endif
+
     return sum_weighted_factors;
   }
+
+  double SemiMarkovCRFModel::viterbi(const Sequence& sequence, Sequence& path, Matrix& viterbi) const {
+
+    typedef boost::numeric::ublas::matrix<int> MatrixInt;
+    int nstates = _n_states;
+    int size =  sequence.size();
+
+    Matrix gamma(nstates, size, -HUGE);
+    Matrix psi(nstates, size, 0 );
+    IntMatrix psilen(nstates, size, 0);
+
+    #if VERBOSE_DETAILS
+      std::cout << "\nInicialization" << std::endl;
+    #endif
+
+    for (int k = 0; k < nstates; k++)
+      gamma(k,0) = sumFeatures(-1, 0, 0, 0, k, sequence);
+
+    for (int i = 1; i < size; i++){
+      #if VERBOSE_DETAILS
+        std::cout << "\n----Position: " << i << std::endl;
+      #endif
+
+      for (int k = 0; k < nstates; k++){
+        #if VERBOSE_DETAILS
+          std::cout << "\n---State: " << k << std::endl;
+        #endif
+
+        gamma(k,i) = -HUGE;
+
+        for(int d = 1; d <= i; d++){
+          #if VERBOSE_DETAILS
+            std::cout << "\n--Distance: " << d << std::endl;
+          #endif
+
+          int b_t = i - d + 1;
+
+          #if VERBOSE_DETAILS
+            std::cout << "\n-Predess: " << 0 << std::endl;
+          #endif
+
+          double gmax = gamma(0, i-d) + sumFeatures(0, i, b_t, i, k, sequence);
+          int pmax = 0;
+
+          for(int p = 1; p < nstates; p++){
+            #if VERBOSE_DETAILS
+              std::cout << "\n-Predess: " << p << std::endl;
+            #endif
+
+            double g1 = gamma(p, i-d) + sumFeatures(p, i, b_t, i, k, sequence);
+            if(gmax < g1){
+              gmax = g1;
+              pmax = p;
+            }
+          }
+
+          if(gamma(k, i) < gmax){
+            gamma(k, i) = gmax;
+            psi(k, i) = pmax;
+            psilen(k, i) = d;
+          }
+        }
+      }
+    }
+
+    //backtracing
+    path.resize(size);
+    int L = size-1;
+    int state = 0;
+    double max = gamma(0, L);
+    for(int k = 1; k < nstates; k++){
+      if(max < gamma(k, L)){
+        max = gamma(k, L);
+        state = k;
+      }
+    }
+
+    while(L > 0){
+      int d = psilen(state, L);
+      int p = psi(state, L);
+      for(int i = 0; i < d; i++){
+        path[L] = state;
+        L--;
+      }
+      state = p;
+    }
+
+    #if VERBOSE
+      std::cout << std::endl << "Inefficient SMCRF Viterbi algorithm:" << std::endl;
+      std::cout << "Best path value: " << max << std::endl;
+      std::cout << "Viterbi matrix: " << std::endl;
+      print_matrix(gamma);
+    #endif
+
+    return max;
+  }
+
+  void SemiMarkovCRFModel::print_matrix(Matrix& m) const {
+    std::cout << "Log values:" << std::endl;
+    for(unsigned i = 0; i < m.size1(); ++i) {
+      for(unsigned j = 0; j < m.size2(); ++j) {
+            std::cout << m(i,j) << "\t";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "Real values:" << std::endl;
+    for(unsigned i = 0; i < m.size1(); ++i) {
+      for(unsigned j = 0; j < m.size2(); ++j) {
+            std::cout << exp(m(i,j)) << "\t";
+        }
+        std::cout << std::endl;
+    }
+  }
+
 
   Sequence& SemiMarkovCRFModel::chooseObservation(Sequence& h, int i, int state) const {
     // if((state >= 0) && (!getState(state)->isSilent()) )
@@ -354,205 +396,5 @@ namespace tops {
     */
    return -1.0;
   }
-
-  double SemiMarkovCRFModel::viterbi(const Sequence& sequence, Sequence& path, Matrix& viterbi) const {
-    /*
-    typedef boost::numeric::ublas::matrix<int> MatrixInt;
-    int nstates = _states.size();
-    int size =  sequence.size();
-
-    Matrix gamma(nstates,size+1);
-    MatrixInt psi(nstates,size+1);
-
-    for (int j = 0; j < nstates; j++)
-      gamma(j,0) = sumFeatures(0,j,-1,sequence);
-
-    for (int t = 1; t < size; t++){
-      for (int j = 0; j < nstates; j++){
-        std::vector<double> log_position_probs;
-        for (int i = 0; i < nstates; i++){
-          log_position_probs.push_back(sumFeatures(t,j,i,sequence) + gamma(i,t-1));
-        }
-        auto it_max = std::max_element(std::begin(log_position_probs),std::end(log_position_probs));
-        gamma(j,t) = *it_max;
-        psi(j,t-1) = std::distance(std::begin(log_position_probs),it_max);
-      }
-    }
-
-    for (int j = 0; j < nstates; j++)
-        psi(j,size-1) = j;
-
-    viterbi = gamma;
-    int L = size-1;
-    path.resize(L+1);
-    double max = gamma(0,L);
-    path[L] = 0;
-    for(int k = 1; k < nstates; k++)
-      if(max < gamma(k,L)) {
-        max = gamma(k,L);
-        path[L] = k;
-      }
-    for(int i = L; i >= 1; i--) {
-      path[i-1] = psi(path[i], i);
-    }
-    for(int i = 0; i < L; i++) {
-      path[i] = path[i+1];
-    }
-    for(int i = 0; i < L; i++) {
-      path[i] = getState(path[i+1])->getName()->id();
-    }
-
-    print_matrix(viterbi);
-
-    return max;
-    */
-    return -1.0;
-  }
-
-  void SemiMarkovCRFModel::print_matrix(Matrix& m) const {
-    std::cout << "Log values:" << std::endl;
-    for(unsigned i = 0; i < m.size1(); ++i) {
-      for(unsigned j = 0; j < m.size2(); ++j) {
-            std::cout << m(i,j) << "\t";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << "Real values:" << std::endl;
-    for(unsigned i = 0; i < m.size1(); ++i) {
-      for(unsigned j = 0; j < m.size2(); ++j) {
-            std::cout << exp(m(i,j)) << "\t";
-        }
-        std::cout << std::endl;
-    }
-  }
-
-/*
-  void SemiMarkovCRFModel::scale(std::vector<double>& in,  int t) {
-    double sum = 0.0;
-    for(int i = 0; i < (int)in.size(); i++) {
-      sum += in[i];
-    }
-    _ctFactors[t] = sum;
-    for(int i = 0; i < (int) in.size(); i++) {
-      in[i] = in[i]/sum;
-    }
-  }
-
-  void SemiMarkovCRFModel::setStates(std::vector<CRFStatePtr> states, AlphabetPtr state_names) {
-    _states = states;
-    _state_names = state_names;
-  }
-  void SemiMarkovCRFModel::setInitialProbability(DiscreteIIDModelPtr initial) {
-    _initial_probability = initial;
-  }
-  void SemiMarkovCRFModel::setObservationSymbols(AlphabetPtr obs) {
-    tops::ProbabilisticModel::setAlphabet(obs);
-  }
-
-  void SemiMarkovCRFModel::trainBaumWelch(SequenceList& sample, int maxiterations, double diff_threshold) {
-    int nstates = _states.size();
-    int alphabet_size = alphabet()->size();
-
-    double diff  = 10.0;
-    if(maxiterations < 0)
-      maxiterations = 500;
-
-    for (int s = 0; s < (int)sample.size(); s++) {
-      double last =10000;
-
-      for(int iterations = 0; iterations < maxiterations; iterations++) {
-        Matrix A (nstates, nstates);
-        Matrix E (nstates,alphabet_size);
-        Matrix pi (nstates, 1);
-
-        Matrix alpha(nstates, sample[s].size());
-        Matrix beta(nstates, sample[s].size());
-
-        double P = forward(sample[s], alpha);
-        backward(sample[s], beta);
-
-        double sum = alpha(0, 0) + beta(0, 0);
-        for(int i = 1; i < nstates; i++)
-          sum = log_sum_2(sum, alpha(i,0) + beta(i,0));
-
-        for(int i = 0; i < nstates; i++) {
-          pi(i, 0) = alpha(i, 0) + beta(i, 0) - sum;
-        }
-
-        for(int i = 0; i < nstates; i++) {
-          for(int j = 0; j < nstates; j++) {
-            int t = 0;
-            double sum = -HUGE;
-            if(t < (int)sample[s].size()-1) {
-              sum = alpha(i, t) + getState(i)->transitions()->log_probability_of(j) + getState(j)->emission()-> log_probability_of(sample[s][t+1]) + beta(j, t+1);
-              for( t = 1; t < (int)sample[s].size()-1; t++) {
-                sum = log_sum_2(sum, alpha(i, t) + getState(i)->transitions()->log_probability_of(j) + getState(j)->emission()-> log_probability_of(sample[s][t+1]) + beta(j, t+1));
-              }
-            }
-            A(i,j) =  sum;
-          }
-          for(int sigma = 0; sigma < alphabet_size; sigma++) {
-            int t = 0;
-            double sum = -HUGE;
-            bool first = true;
-            for(t = 0; t < (int)sample[s].size(); t++) {
-              if((sigma == sample[s][t]) && first) {
-                sum =  alpha(i, t) + beta(i,t);
-                first = false;
-              } else if(sigma == sample[s][t]) {
-                sum  = log_sum_2(sum, alpha(i,t) + beta(i,t));
-              }
-            }
-            E(i, sigma) =  sum ;
-          }
-        }
-
-        Matrix sumA(1, nstates);
-        Matrix sumE(1, nstates);
-        for(int k = 0; k < nstates; k++) {
-          int l = 0;
-          if(l < nstates) {
-            sumA(0, k) = A(k, l);
-            for(l = 1; l < nstates; l++) {
-              sumA(0, k) = log_sum_2(sumA(0,k), A(k,l));
-            }
-          }
-          int b = 0;
-          if(b < alphabet_size) {
-            sumE(0, k) = E(k,b);
-            for( b = 1; b < alphabet_size; b++)
-              sumE(0, k) = log_sum_2(sumE(0, k), E(k,b));
-          }
-        }
-        std::vector <double> probs;
-        probs.resize(nstates);
-        for(int k = 0; k < nstates; k++) {
-          _initial_probability->log_probability_of(k,pi(k,0) );
-          for(int l = 0; l < nstates; l++) {
-            A(k,l) = A(k,l) - sumA(0,k);
-            getState(k)->transitions()->log_probability_of(l, A(k,l));
-          }
-          for(int b = 0; b <alphabet_size; b++) {
-            E(k,b) = E(k,b) - sumE(0,k);
-            getState(k)->emission()->log_probability_of(b, E(k,b));
-          }
-        }
-
-        diff = fabs(last - P);
-
-        if(diff < diff_threshold)
-          break;
-
-        // std::cerr << "iteration: " << iterations << std::endl;
-        // fprintf(stderr, "LL: %lf\n" , P );
-        // std::cerr << "Diff: " << diff << std::endl;
-        // std::cerr << str() << std::endl;
-
-        last = P;
-      }
-    }
-  }
-
-  */
 
 }

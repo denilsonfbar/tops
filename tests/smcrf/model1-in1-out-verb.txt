@@ -1,0 +1,701 @@
+Inefficient GHMM Viterbi algorithm:
+Best path value: -5.54818
+Viterbi matrix: 
+Log values:
+-1.38629	-2.77359	-4.16088	-5.54818	
+-1.79769e+308	-1.79769e+308	-1.79769e+308	-1.79769e+308	
+-inf	-1.79769e+308	-1.79769e+308	-1.79769e+308	
+-inf	-1.79769e+308	-1.79769e+308	-1.79769e+308	
+Real values:
+0.25	0.0624375	0.0155938	0.00389454	
+0	0	0	0	
+0	0	0	0	
+0	0	0	0	
+--> Executed initialize_prefix_sum_arrays(x)
+
+Inicialization
+init :	t: 0	b: 0	e: 0	y: 0	y-1: -1	x[t]: 0	log: 0	real: 1
+obser:	t: 0	b: 0	e: 0	y: 0	y-1: -1	x[t]: 0	log: -1.38629	real: 0.25
+durat:	t: 0	b: 0	e: 0	y: 0	y-1: -1	x[t]: 0	log: 0	real: 1
+Sum:	log: -1.38629	real: 0.25
+init :	t: 0	b: 0	e: 0	y: 1	y-1: -1	x[t]: 0	log: -1.79769e+308	real: 0
+obser:	t: 0	b: 0	e: 0	y: 1	y-1: -1	x[t]: 0	log: -1.60944	real: 0.2
+durat:	t: 0	b: 0	e: 0	y: 1	y-1: -1	x[t]: 0	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+init :	t: 0	b: 0	e: 0	y: 2	y-1: -1	x[t]: 0	log: -1.79769e+308	real: 0
+obser:	t: 0	b: 0	e: 0	y: 2	y-1: -1	x[t]: 0	log: -1.79769e+308	real: 0
+durat:	t: 0	b: 0	e: 0	y: 2	y-1: -1	x[t]: 0	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+init :	t: 0	b: 0	e: 0	y: 3	y-1: -1	x[t]: 0	log: -1.79769e+308	real: 0
+obser:	t: 0	b: 0	e: 0	y: 3	y-1: -1	x[t]: 0	log: -1.79769e+308	real: 0
+durat:	t: 0	b: 0	e: 0	y: 3	y-1: -1	x[t]: 0	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+----Position: 1
+
+---State: 0
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 1	b: 1	e: 1	y: 0	y-1: 0	x[t]: 1	log: -0.0010005	real: 0.999
+obser:	t: 1	b: 1	e: 1	y: 0	y-1: 0	x[t]: 1	log: -1.38629	real: 0.25
+durat:	t: 1	b: 1	e: 1	y: 0	y-1: 0	x[t]: 1	log: 0	real: 1
+Sum:	log: -1.38729	real: 0.24975
+
+-Predess: 1
+trans:	t: 1	b: 1	e: 1	y: 0	y-1: 1	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 0	y-1: 1	x[t]: 1	log: -1.38629	real: 0.25
+durat:	t: 1	b: 1	e: 1	y: 0	y-1: 1	x[t]: 1	log: 0	real: 1
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 1	b: 1	e: 1	y: 0	y-1: 2	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 0	y-1: 2	x[t]: 1	log: -1.38629	real: 0.25
+durat:	t: 1	b: 1	e: 1	y: 0	y-1: 2	x[t]: 1	log: 0	real: 1
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 3
+trans:	t: 1	b: 1	e: 1	y: 0	y-1: 3	x[t]: 1	log: 0	real: 1
+obser:	t: 1	b: 1	e: 1	y: 0	y-1: 3	x[t]: 1	log: -1.38629	real: 0.25
+durat:	t: 1	b: 1	e: 1	y: 0	y-1: 3	x[t]: 1	log: 0	real: 1
+Sum:	log: -1.38629	real: 0.25
+
+---State: 1
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 1	b: 1	e: 1	y: 1	y-1: 0	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 1	y-1: 0	x[t]: 1	log: -1.58592	real: 0.204759
+durat:	t: 1	b: 1	e: 1	y: 1	y-1: 0	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 1	b: 1	e: 1	y: 1	y-1: 1	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 1	y-1: 1	x[t]: 1	log: -1.58592	real: 0.204759
+durat:	t: 1	b: 1	e: 1	y: 1	y-1: 1	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 1	b: 1	e: 1	y: 1	y-1: 2	x[t]: 1	log: 0	real: 1
+obser:	t: 1	b: 1	e: 1	y: 1	y-1: 2	x[t]: 1	log: -1.58592	real: 0.204759
+durat:	t: 1	b: 1	e: 1	y: 1	y-1: 2	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 3
+trans:	t: 1	b: 1	e: 1	y: 1	y-1: 3	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 1	y-1: 3	x[t]: 1	log: -1.58592	real: 0.204759
+durat:	t: 1	b: 1	e: 1	y: 1	y-1: 3	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+---State: 2
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 1	b: 1	e: 1	y: 2	y-1: 0	x[t]: 1	log: -6.90776	real: 0.001
+obser:	t: 1	b: 1	e: 1	y: 2	y-1: 0	x[t]: 1	log: -4.19795	real: 0.0150263
+durat:	t: 1	b: 1	e: 1	y: 2	y-1: 0	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 1	b: 1	e: 1	y: 2	y-1: 1	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 2	y-1: 1	x[t]: 1	log: -4.19795	real: 0.0150263
+durat:	t: 1	b: 1	e: 1	y: 2	y-1: 1	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 1	b: 1	e: 1	y: 2	y-1: 2	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 2	y-1: 2	x[t]: 1	log: -4.19795	real: 0.0150263
+durat:	t: 1	b: 1	e: 1	y: 2	y-1: 2	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 1	b: 1	e: 1	y: 2	y-1: 3	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 2	y-1: 3	x[t]: 1	log: -4.19795	real: 0.0150263
+durat:	t: 1	b: 1	e: 1	y: 2	y-1: 3	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+---State: 3
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 1	b: 1	e: 1	y: 3	y-1: 0	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 3	y-1: 0	x[t]: 1	log: -4.01563	real: 0.0180315
+durat:	t: 1	b: 1	e: 1	y: 3	y-1: 0	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 1	b: 1	e: 1	y: 3	y-1: 1	x[t]: 1	log: 0	real: 1
+obser:	t: 1	b: 1	e: 1	y: 3	y-1: 1	x[t]: 1	log: -4.01563	real: 0.0180315
+durat:	t: 1	b: 1	e: 1	y: 3	y-1: 1	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 1	b: 1	e: 1	y: 3	y-1: 2	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 3	y-1: 2	x[t]: 1	log: -4.01563	real: 0.0180315
+durat:	t: 1	b: 1	e: 1	y: 3	y-1: 2	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 1	b: 1	e: 1	y: 3	y-1: 3	x[t]: 1	log: -1.79769e+308	real: 0
+obser:	t: 1	b: 1	e: 1	y: 3	y-1: 3	x[t]: 1	log: -4.01563	real: 0.0180315
+durat:	t: 1	b: 1	e: 1	y: 3	y-1: 3	x[t]: 1	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+----Position: 2
+
+---State: 0
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 2	b: 2	e: 2	y: 0	y-1: 0	x[t]: 2	log: -0.0010005	real: 0.999
+obser:	t: 2	b: 2	e: 2	y: 0	y-1: 0	x[t]: 2	log: -1.38629	real: 0.25
+durat:	t: 2	b: 2	e: 2	y: 0	y-1: 0	x[t]: 2	log: 0	real: 1
+Sum:	log: -1.38729	real: 0.24975
+
+-Predess: 1
+trans:	t: 2	b: 2	e: 2	y: 0	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 0	y-1: 1	x[t]: 2	log: -1.38629	real: 0.25
+durat:	t: 2	b: 2	e: 2	y: 0	y-1: 1	x[t]: 2	log: 0	real: 1
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 2	b: 2	e: 2	y: 0	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 0	y-1: 2	x[t]: 2	log: -1.38629	real: 0.25
+durat:	t: 2	b: 2	e: 2	y: 0	y-1: 2	x[t]: 2	log: 0	real: 1
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 3
+trans:	t: 2	b: 2	e: 2	y: 0	y-1: 3	x[t]: 2	log: 0	real: 1
+obser:	t: 2	b: 2	e: 2	y: 0	y-1: 3	x[t]: 2	log: -1.38629	real: 0.25
+durat:	t: 2	b: 2	e: 2	y: 0	y-1: 3	x[t]: 2	log: 0	real: 1
+Sum:	log: -1.38629	real: 0.25
+
+--Distance: 2
+
+-Predess: 0
+trans:	t: 2	b: 1	e: 2	y: 0	y-1: 0	x[t]: 2	log: -0.0010005	real: 0.999
+obser:	t: 2	b: 1	e: 2	y: 0	y-1: 0	x[t]: 2	log: -2.77259	real: 0.0625
+durat:	t: 2	b: 1	e: 2	y: 0	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 2	b: 1	e: 2	y: 0	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 0	y-1: 1	x[t]: 2	log: -2.77259	real: 0.0625
+durat:	t: 2	b: 1	e: 2	y: 0	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 2	b: 1	e: 2	y: 0	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 0	y-1: 2	x[t]: 2	log: -2.77259	real: 0.0625
+durat:	t: 2	b: 1	e: 2	y: 0	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 2	b: 1	e: 2	y: 0	y-1: 3	x[t]: 2	log: 0	real: 1
+obser:	t: 2	b: 1	e: 2	y: 0	y-1: 3	x[t]: 2	log: -2.77259	real: 0.0625
+durat:	t: 2	b: 1	e: 2	y: 0	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+---State: 1
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 2	b: 2	e: 2	y: 1	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 1	y-1: 0	x[t]: 2	log: -1.79653	real: 0.165873
+durat:	t: 2	b: 2	e: 2	y: 1	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 2	b: 2	e: 2	y: 1	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 1	y-1: 1	x[t]: 2	log: -1.79653	real: 0.165873
+durat:	t: 2	b: 2	e: 2	y: 1	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 2	b: 2	e: 2	y: 1	y-1: 2	x[t]: 2	log: 0	real: 1
+obser:	t: 2	b: 2	e: 2	y: 1	y-1: 2	x[t]: 2	log: -1.79653	real: 0.165873
+durat:	t: 2	b: 2	e: 2	y: 1	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 3
+trans:	t: 2	b: 2	e: 2	y: 1	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 1	y-1: 3	x[t]: 2	log: -1.79653	real: 0.165873
+durat:	t: 2	b: 2	e: 2	y: 1	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 2
+
+-Predess: 0
+trans:	t: 2	b: 1	e: 2	y: 1	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 1	y-1: 0	x[t]: 2	log: -3.65295	real: 0.0259145
+durat:	t: 2	b: 1	e: 2	y: 1	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 2	b: 1	e: 2	y: 1	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 1	y-1: 1	x[t]: 2	log: -3.65295	real: 0.0259145
+durat:	t: 2	b: 1	e: 2	y: 1	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 2	b: 1	e: 2	y: 1	y-1: 2	x[t]: 2	log: 0	real: 1
+obser:	t: 2	b: 1	e: 2	y: 1	y-1: 2	x[t]: 2	log: -3.65295	real: 0.0259145
+durat:	t: 2	b: 1	e: 2	y: 1	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 3
+trans:	t: 2	b: 1	e: 2	y: 1	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 1	y-1: 3	x[t]: 2	log: -3.65295	real: 0.0259145
+durat:	t: 2	b: 1	e: 2	y: 1	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+---State: 2
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 2	b: 2	e: 2	y: 2	y-1: 0	x[t]: 2	log: -6.90776	real: 0.001
+obser:	t: 2	b: 2	e: 2	y: 2	y-1: 0	x[t]: 2	log: -2.84988	real: 0.0578513
+durat:	t: 2	b: 2	e: 2	y: 2	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 2	b: 2	e: 2	y: 2	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 2	y-1: 1	x[t]: 2	log: -2.84988	real: 0.0578513
+durat:	t: 2	b: 2	e: 2	y: 2	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 2	b: 2	e: 2	y: 2	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 2	y-1: 2	x[t]: 2	log: -2.84988	real: 0.0578513
+durat:	t: 2	b: 2	e: 2	y: 2	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 2	b: 2	e: 2	y: 2	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 2	y-1: 3	x[t]: 2	log: -2.84988	real: 0.0578513
+durat:	t: 2	b: 2	e: 2	y: 2	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 2
+
+-Predess: 0
+trans:	t: 2	b: 1	e: 2	y: 2	y-1: 0	x[t]: 2	log: -6.90776	real: 0.001
+obser:	t: 2	b: 1	e: 2	y: 2	y-1: 0	x[t]: 2	log: -4.19795	real: 0.0150263
+durat:	t: 2	b: 1	e: 2	y: 2	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 2	b: 1	e: 2	y: 2	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 2	y-1: 1	x[t]: 2	log: -4.19795	real: 0.0150263
+durat:	t: 2	b: 1	e: 2	y: 2	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 2	b: 1	e: 2	y: 2	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 2	y-1: 2	x[t]: 2	log: -4.19795	real: 0.0150263
+durat:	t: 2	b: 1	e: 2	y: 2	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 2	b: 1	e: 2	y: 2	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 2	y-1: 3	x[t]: 2	log: -4.19795	real: 0.0150263
+durat:	t: 2	b: 1	e: 2	y: 2	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+---State: 3
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 2	b: 2	e: 2	y: 3	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 3	y-1: 0	x[t]: 2	log: -2.71635	real: 0.0661156
+durat:	t: 2	b: 2	e: 2	y: 3	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 2	b: 2	e: 2	y: 3	y-1: 1	x[t]: 2	log: 0	real: 1
+obser:	t: 2	b: 2	e: 2	y: 3	y-1: 1	x[t]: 2	log: -2.71635	real: 0.0661156
+durat:	t: 2	b: 2	e: 2	y: 3	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 2	b: 2	e: 2	y: 3	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 3	y-1: 2	x[t]: 2	log: -2.71635	real: 0.0661156
+durat:	t: 2	b: 2	e: 2	y: 3	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 2	b: 2	e: 2	y: 3	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 2	e: 2	y: 3	y-1: 3	x[t]: 2	log: -2.71635	real: 0.0661156
+durat:	t: 2	b: 2	e: 2	y: 3	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 2
+
+-Predess: 0
+trans:	t: 2	b: 1	e: 2	y: 3	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 3	y-1: 0	x[t]: 2	log: -4.01563	real: 0.0180315
+durat:	t: 2	b: 1	e: 2	y: 3	y-1: 0	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 2	b: 1	e: 2	y: 3	y-1: 1	x[t]: 2	log: 0	real: 1
+obser:	t: 2	b: 1	e: 2	y: 3	y-1: 1	x[t]: 2	log: -4.01563	real: 0.0180315
+durat:	t: 2	b: 1	e: 2	y: 3	y-1: 1	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 2	b: 1	e: 2	y: 3	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 3	y-1: 2	x[t]: 2	log: -4.01563	real: 0.0180315
+durat:	t: 2	b: 1	e: 2	y: 3	y-1: 2	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 2	b: 1	e: 2	y: 3	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+obser:	t: 2	b: 1	e: 2	y: 3	y-1: 3	x[t]: 2	log: -4.01563	real: 0.0180315
+durat:	t: 2	b: 1	e: 2	y: 3	y-1: 3	x[t]: 2	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+----Position: 3
+
+---State: 0
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 3	b: 3	e: 3	y: 0	y-1: 0	x[t]: 3	log: -0.0010005	real: 0.999
+obser:	t: 3	b: 3	e: 3	y: 0	y-1: 0	x[t]: 3	log: -1.38629	real: 0.25
+durat:	t: 3	b: 3	e: 3	y: 0	y-1: 0	x[t]: 3	log: 0	real: 1
+Sum:	log: -1.38729	real: 0.24975
+
+-Predess: 1
+trans:	t: 3	b: 3	e: 3	y: 0	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 0	y-1: 1	x[t]: 3	log: -1.38629	real: 0.25
+durat:	t: 3	b: 3	e: 3	y: 0	y-1: 1	x[t]: 3	log: 0	real: 1
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 3	e: 3	y: 0	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 0	y-1: 2	x[t]: 3	log: -1.38629	real: 0.25
+durat:	t: 3	b: 3	e: 3	y: 0	y-1: 2	x[t]: 3	log: 0	real: 1
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 3	e: 3	y: 0	y-1: 3	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 3	e: 3	y: 0	y-1: 3	x[t]: 3	log: -1.38629	real: 0.25
+durat:	t: 3	b: 3	e: 3	y: 0	y-1: 3	x[t]: 3	log: 0	real: 1
+Sum:	log: -1.38629	real: 0.25
+
+--Distance: 2
+
+-Predess: 0
+trans:	t: 3	b: 2	e: 3	y: 0	y-1: 0	x[t]: 3	log: -0.0010005	real: 0.999
+obser:	t: 3	b: 2	e: 3	y: 0	y-1: 0	x[t]: 3	log: -2.77259	real: 0.0625
+durat:	t: 3	b: 2	e: 3	y: 0	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 2	e: 3	y: 0	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 0	y-1: 1	x[t]: 3	log: -2.77259	real: 0.0625
+durat:	t: 3	b: 2	e: 3	y: 0	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 2	e: 3	y: 0	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 0	y-1: 2	x[t]: 3	log: -2.77259	real: 0.0625
+durat:	t: 3	b: 2	e: 3	y: 0	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 2	e: 3	y: 0	y-1: 3	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 2	e: 3	y: 0	y-1: 3	x[t]: 3	log: -2.77259	real: 0.0625
+durat:	t: 3	b: 2	e: 3	y: 0	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+--Distance: 3
+
+-Predess: 0
+trans:	t: 3	b: 1	e: 3	y: 0	y-1: 0	x[t]: 3	log: -0.0010005	real: 0.999
+obser:	t: 3	b: 1	e: 3	y: 0	y-1: 0	x[t]: 3	log: -4.15888	real: 0.015625
+durat:	t: 3	b: 1	e: 3	y: 0	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 1	e: 3	y: 0	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 0	y-1: 1	x[t]: 3	log: -4.15888	real: 0.015625
+durat:	t: 3	b: 1	e: 3	y: 0	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 1	e: 3	y: 0	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 0	y-1: 2	x[t]: 3	log: -4.15888	real: 0.015625
+durat:	t: 3	b: 1	e: 3	y: 0	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 1	e: 3	y: 0	y-1: 3	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 1	e: 3	y: 0	y-1: 3	x[t]: 3	log: -4.15888	real: 0.015625
+durat:	t: 3	b: 1	e: 3	y: 0	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+---State: 1
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 3	b: 3	e: 3	y: 1	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 1	y-1: 0	x[t]: 3	log: -1.86648	real: 0.154667
+durat:	t: 3	b: 3	e: 3	y: 1	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 3	e: 3	y: 1	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 1	y-1: 1	x[t]: 3	log: -1.86648	real: 0.154667
+durat:	t: 3	b: 3	e: 3	y: 1	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 3	e: 3	y: 1	y-1: 2	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 3	e: 3	y: 1	y-1: 2	x[t]: 3	log: -1.86648	real: 0.154667
+durat:	t: 3	b: 3	e: 3	y: 1	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 3	e: 3	y: 1	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 1	y-1: 3	x[t]: 3	log: -1.86648	real: 0.154667
+durat:	t: 3	b: 3	e: 3	y: 1	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 2
+
+-Predess: 0
+trans:	t: 3	b: 2	e: 3	y: 1	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 1	y-1: 0	x[t]: 3	log: -3.22634	real: 0.0397024
+durat:	t: 3	b: 2	e: 3	y: 1	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 2	e: 3	y: 1	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 1	y-1: 1	x[t]: 3	log: -3.22634	real: 0.0397024
+durat:	t: 3	b: 2	e: 3	y: 1	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 2	e: 3	y: 1	y-1: 2	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 2	e: 3	y: 1	y-1: 2	x[t]: 3	log: -3.22634	real: 0.0397024
+durat:	t: 3	b: 2	e: 3	y: 1	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 2	e: 3	y: 1	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 1	y-1: 3	x[t]: 3	log: -3.22634	real: 0.0397024
+durat:	t: 3	b: 2	e: 3	y: 1	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 3
+
+-Predess: 0
+trans:	t: 3	b: 1	e: 3	y: 1	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 1	y-1: 0	x[t]: 3	log: -5.4935	real: 0.00411341
+durat:	t: 3	b: 1	e: 3	y: 1	y-1: 0	x[t]: 3	log: -5.28803	real: 0.00505169
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 1	e: 3	y: 1	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 1	y-1: 1	x[t]: 3	log: -5.4935	real: 0.00411341
+durat:	t: 3	b: 1	e: 3	y: 1	y-1: 1	x[t]: 3	log: -5.28803	real: 0.00505169
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 1	e: 3	y: 1	y-1: 2	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 1	e: 3	y: 1	y-1: 2	x[t]: 3	log: -5.4935	real: 0.00411341
+durat:	t: 3	b: 1	e: 3	y: 1	y-1: 2	x[t]: 3	log: -5.28803	real: 0.00505169
+Sum:	log: -10.7815	real: 2.07797e-05
+
+-Predess: 3
+trans:	t: 3	b: 1	e: 3	y: 1	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 1	y-1: 3	x[t]: 3	log: -5.4935	real: 0.00411341
+durat:	t: 3	b: 1	e: 3	y: 1	y-1: 3	x[t]: 3	log: -5.28803	real: 0.00505169
+Sum:	log: -1.79769e+308	real: 0
+
+---State: 2
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 3	b: 3	e: 3	y: 2	y-1: 0	x[t]: 3	log: -6.90776	real: 0.001
+obser:	t: 3	b: 3	e: 3	y: 2	y-1: 0	x[t]: 3	log: -1.70475	real: 0.181818
+durat:	t: 3	b: 3	e: 3	y: 2	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 3	e: 3	y: 2	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 2	y-1: 1	x[t]: 3	log: -1.70475	real: 0.181818
+durat:	t: 3	b: 3	e: 3	y: 2	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 3	e: 3	y: 2	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 2	y-1: 2	x[t]: 3	log: -1.70475	real: 0.181818
+durat:	t: 3	b: 3	e: 3	y: 2	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 3	e: 3	y: 2	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 2	y-1: 3	x[t]: 3	log: -1.70475	real: 0.181818
+durat:	t: 3	b: 3	e: 3	y: 2	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 2
+
+-Predess: 0
+trans:	t: 3	b: 2	e: 3	y: 2	y-1: 0	x[t]: 3	log: -6.90776	real: 0.001
+obser:	t: 3	b: 2	e: 3	y: 2	y-1: 0	x[t]: 3	log: -2.84988	real: 0.0578513
+durat:	t: 3	b: 2	e: 3	y: 2	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 2	e: 3	y: 2	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 2	y-1: 1	x[t]: 3	log: -2.84988	real: 0.0578513
+durat:	t: 3	b: 2	e: 3	y: 2	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 2	e: 3	y: 2	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 2	y-1: 2	x[t]: 3	log: -2.84988	real: 0.0578513
+durat:	t: 3	b: 2	e: 3	y: 2	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 2	e: 3	y: 2	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 2	y-1: 3	x[t]: 3	log: -2.84988	real: 0.0578513
+durat:	t: 3	b: 2	e: 3	y: 2	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 3
+
+-Predess: 0
+trans:	t: 3	b: 1	e: 3	y: 2	y-1: 0	x[t]: 3	log: -6.90776	real: 0.001
+obser:	t: 3	b: 1	e: 3	y: 2	y-1: 0	x[t]: 3	log: -4.19795	real: 0.0150263
+durat:	t: 3	b: 1	e: 3	y: 2	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 1	e: 3	y: 2	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 2	y-1: 1	x[t]: 3	log: -4.19795	real: 0.0150263
+durat:	t: 3	b: 1	e: 3	y: 2	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 1	e: 3	y: 2	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 2	y-1: 2	x[t]: 3	log: -4.19795	real: 0.0150263
+durat:	t: 3	b: 1	e: 3	y: 2	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 1	e: 3	y: 2	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 2	y-1: 3	x[t]: 3	log: -4.19795	real: 0.0150263
+durat:	t: 3	b: 1	e: 3	y: 2	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+---State: 3
+
+--Distance: 1
+
+-Predess: 0
+trans:	t: 3	b: 3	e: 3	y: 3	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 3	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+durat:	t: 3	b: 3	e: 3	y: 3	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 3	e: 3	y: 3	y-1: 1	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 3	e: 3	y: 3	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+durat:	t: 3	b: 3	e: 3	y: 3	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 3	e: 3	y: 3	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 3	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+durat:	t: 3	b: 3	e: 3	y: 3	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 3	e: 3	y: 3	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 3	e: 3	y: 3	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+durat:	t: 3	b: 3	e: 3	y: 3	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 2
+
+-Predess: 0
+trans:	t: 3	b: 2	e: 3	y: 3	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 3	y-1: 0	x[t]: 3	log: -2.71635	real: 0.0661156
+durat:	t: 3	b: 2	e: 3	y: 3	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 2	e: 3	y: 3	y-1: 1	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 2	e: 3	y: 3	y-1: 1	x[t]: 3	log: -2.71635	real: 0.0661156
+durat:	t: 3	b: 2	e: 3	y: 3	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 2	e: 3	y: 3	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 3	y-1: 2	x[t]: 3	log: -2.71635	real: 0.0661156
+durat:	t: 3	b: 2	e: 3	y: 3	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 2	e: 3	y: 3	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 2	e: 3	y: 3	y-1: 3	x[t]: 3	log: -2.71635	real: 0.0661156
+durat:	t: 3	b: 2	e: 3	y: 3	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+--Distance: 3
+
+-Predess: 0
+trans:	t: 3	b: 1	e: 3	y: 3	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 3	y-1: 0	x[t]: 3	log: -4.01563	real: 0.0180315
+durat:	t: 3	b: 1	e: 3	y: 3	y-1: 0	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 1
+trans:	t: 3	b: 1	e: 3	y: 3	y-1: 1	x[t]: 3	log: 0	real: 1
+obser:	t: 3	b: 1	e: 3	y: 3	y-1: 1	x[t]: 3	log: -4.01563	real: 0.0180315
+durat:	t: 3	b: 1	e: 3	y: 3	y-1: 1	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -1.79769e+308	real: 0
+
+-Predess: 2
+trans:	t: 3	b: 1	e: 3	y: 3	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 3	y-1: 2	x[t]: 3	log: -4.01563	real: 0.0180315
+durat:	t: 3	b: 1	e: 3	y: 3	y-1: 2	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+-Predess: 3
+trans:	t: 3	b: 1	e: 3	y: 3	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+obser:	t: 3	b: 1	e: 3	y: 3	y-1: 3	x[t]: 3	log: -4.01563	real: 0.0180315
+durat:	t: 3	b: 1	e: 3	y: 3	y-1: 3	x[t]: 3	log: -1.79769e+308	real: 0
+Sum:	log: -inf	real: 0
+
+Inefficient SMCRF Viterbi algorithm:
+Best path value: -5.54818
+Viterbi matrix: 
+Log values:
+-1.38629	-2.77359	-4.16088	-5.54818	
+-inf	-1.79769e+308	-1.79769e+308	-1.79769e+308	
+-inf	-1.79769e+308	-1.79769e+308	-1.79769e+308	
+-inf	-1.79769e+308	-1.79769e+308	-1.79769e+308	
+Real values:
+0.25	0.0624375	0.0155938	0.00389454	
+0	0	0	0	
+0	0	0	0	
+0	0	0	0	
+DNA: -5.54818:	NonCoding NonCoding NonCoding NonCoding 

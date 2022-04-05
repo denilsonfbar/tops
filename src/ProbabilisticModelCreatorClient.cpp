@@ -45,6 +45,7 @@
 #include "MultipleSequentialModelCreator.hpp"
 #include "MaximalDependenceDecompositionCreator.hpp"
 #include "LinearChainCRFModelCreator.hpp"
+#include "SemiMarkovCRFModelCreator.hpp"
 #include "util.hpp"
 
 
@@ -319,6 +320,7 @@ namespace tops
     _createModelCommand["MaximalDependenceDecomposition"] =
       MaximalDependenceDecompositionCreatorPtr(new MaximalDependenceDecompositionCreator());
     _createModelCommand["LinearChainCRFModel"] = LinearChainCRFModelCreatorPtr(new LinearChainCRFModelCreator());
+    _createModelCommand["SemiMarkovCRFModel"] = SemiMarkovCRFModelCreatorPtr(new SemiMarkovCRFModelCreator());
 
   }
 }
