@@ -2,9 +2,10 @@
  *       GeneralizedHiddenMarkovModel.cpp
  *
  *       Copyright 2011 Andre Yoshiaki Kashiwabara <akashiwabara@usp.br>
- *                      Õgor Bonadio <ibonadio@ime.usp.br>
+ *                      √çgor Bonadio <ibonadio@ime.usp.br>
  *                      Vitor Onuchic <vitoronuchic@gmail.com>
  *                      Alan Mitchell Durham <aland@usp.br>
+ *                 2022 Denilson Fagundes Barbosa <denilsonfbar@gmail.com>
  *
  *       This program is free software; you can redistribute it and/or modify
  *       it under the terms of the GNU  General Public License as published by
@@ -719,6 +720,27 @@ double GeneralizedHiddenMarkovModel::_viterbi(const Sequence &s, Sequence &path,
     }
     state = p;
   }
+
+  #if VERBOSE
+    std::cout << std::endl << "Inefficient GHMM Viterbi algorithm:" << std::endl;
+    std::cout << "Best path value: " << max << std::endl;
+    std::cout << "Viterbi matrix: " << std::endl;
+    std::cout << "Log values:" << std::endl;
+    for(unsigned i = 0; i < gamma.size1(); ++i) {
+      for(unsigned j = 0; j < gamma.size2(); ++j) {
+            std::cout << gamma(i,j) << "\t";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "Real values:" << std::endl;
+    for(unsigned i = 0; i < gamma.size1(); ++i) {
+      for(unsigned j = 0; j < gamma.size2(); ++j) {
+            std::cout << exp(gamma(i,j)) << "\t";
+        }
+        std::cout << std::endl;
+    }
+  #endif
+
   return max;
 }
 
@@ -726,6 +748,105 @@ double GeneralizedHiddenMarkovModel::_viterbi(const Sequence &s, Sequence &path,
 //! Viterbi algorithm
 double GeneralizedHiddenMarkovModel::viterbi(const Sequence &s, Sequence &path,
                 Matrix & g) const {
+
+
+  //Inefficient SMCRF Viterbi algorithm
+  typedef boost::numeric::ublas::matrix<int> MatrixInt;
+  int nstates = _all_states.size();
+  int size =  s.size();
+
+  Matrix gamma(nstates, size, -HUGE);
+  Matrix psi(nstates, size, 0 );
+  IntMatrix psilen(nstates, size, 0);
+
+  #if VERBOSE_DETAILS
+    std::cout << "\nInicialization" << std::endl;
+  #endif
+
+  for (int k = 0; k < nstates; k++)
+    gamma(k,0) = sumFeatures(-1, 0, 0, 0, k, s);
+
+  for (int i = 1; i < size; i++){
+    #if VERBOSE_DETAILS
+      std::cout << "\n----Position: " << i << std::endl;
+    #endif
+
+    for (int k = 0; k < nstates; k++){
+      #if VERBOSE_DETAILS
+        std::cout << "\n---State: " << k << std::endl;
+      #endif
+
+      gamma(k,i) = -HUGE;
+
+      for(int d = 1; d <= i; d++){
+        #if VERBOSE_DETAILS
+          std::cout << "\n--Distance: " << d << std::endl;
+        #endif
+
+        int b_t = i - d + 1;
+
+        #if VERBOSE_DETAILS
+          std::cout << "\n-Predess: " << 0 << std::endl;
+        #endif
+
+        double gmax = gamma(0, i-d) + sumFeatures(0, i, b_t, i, k, s);
+        int pmax = 0;
+
+        for(int p = 1; p < nstates; p++){
+          #if VERBOSE_DETAILS
+            std::cout << "\n-Predess: " << p << std::endl;
+          #endif
+
+          double g1 = gamma(p, i-d) + sumFeatures(p, i, b_t, i, k, s);
+          if(gmax < g1){
+            gmax = g1;
+            pmax = p;
+          }
+        }
+
+        if(gamma(k, i) < gmax){
+          gamma(k, i) = gmax;
+          psi(k, i) = pmax;
+          psilen(k, i) = d;
+        }
+      }
+    }
+  }
+
+  //backtracing
+  path.resize(size);
+  int L = size-1;
+  int state = 0;
+  double max = gamma(0, L);
+  for(int k = 1; k < nstates; k++){
+    if(max < gamma(k, L)){
+      max = gamma(k, L);
+      state = k;
+    }
+  }
+
+  while(L > 0){
+    int d = psilen(state, L);
+    int p = psi(state, L);
+    for(int i = 0; i < d; i++){
+      path[L] = state;
+      L--;
+    }
+    state = p;
+  }
+
+  #if VERBOSE
+    std::cout << std::endl << "Inefficient SMCRF Viterbi algorithm:" << std::endl;
+    std::cout << "Best path value: " << max << std::endl;
+    std::cout << "Viterbi matrix: " << std::endl;
+    print_matrix(gamma);
+  #endif
+
+  return max;
+
+
+  // Original GHMM efficient Viterbi algorithm
+  /*
   int size = s.size();
   int nstates = _all_states.size();
 
@@ -867,6 +988,8 @@ double GeneralizedHiddenMarkovModel::viterbi(const Sequence &s, Sequence &path,
   }
 #endif
   return max;
+  */
+
 
 }
 

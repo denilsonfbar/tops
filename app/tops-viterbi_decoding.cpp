@@ -5,6 +5,7 @@
  *                      Ígor Bonadio <ibonadio@ime.usp.br>
  *                      Vitor Onuchic <vitoronuchic@gmail.com>
  *                      Alan Mitchell Durham <aland@usp.br>
+ *                 2022 Denilson Fagundes Barbosa <denilsonfbar@gmail.com>
  *
  *       This program is free software; you can redistribute it and/or modify
  *       it under the terms of the GNU  General Public License as published by
@@ -34,6 +35,12 @@
 #include "SequenceEntry.hpp"
 #include "ProbabilisticModelCreatorClient.hpp"
 #include "version.hpp"
+
+
+// SMCRF features functions from GHMM model
+#include "FeatureFunctionGHMM.hpp"
+
+
 using namespace tops;
 using namespace std;
 using namespace boost::program_options;
@@ -88,6 +95,27 @@ int main (int argc, char ** argv)
       SequenceFormatManager::instance()->setFormat(SequenceFormatPtr(new SequenceFormat()));
       SequenceEntry output(model->decodable()->getStateNames());
       std::cin.rdbuf()->pubsetbuf(0, 0); // make it unbuffered
+
+
+
+      // SMCRF configuration
+
+      // Cast ProbabilisticModelPtr to GeneralizedHiddenMarkovModelPtr
+      DecodableModelPtr dec_model = boost::dynamic_pointer_cast<DecodableModel> (model);
+      GeneralizedHiddenMarkovModelPtr ghmm_model = boost::dynamic_pointer_cast<GeneralizedHiddenMarkovModel> (dec_model);
+
+      // Setup GHMM features functions
+      FeatureFunctionPtr feature_function_ghmm_transitions = FeatureFunctionGHMMTransitionsPtr(new FeatureFunctionGHMMTransitions(ghmm_model));
+      ghmm_model->addFeatureFunction(feature_function_ghmm_transitions, 1.0);
+
+      FeatureFunctionPtr feature_function_ghmm_observations = FeatureFunctionGHMMObservationsPtr(new FeatureFunctionGHMMObservations(ghmm_model));
+      ghmm_model->addFeatureFunction(feature_function_ghmm_observations, 1.0);
+
+      FeatureFunctionPtr feature_function_ghmm_durations = FeatureFunctionGHMMDurationsPtr(new FeatureFunctionGHMMDurations(ghmm_model));
+      ghmm_model->addFeatureFunction(feature_function_ghmm_durations, 1.0);
+
+
+
       while(!cin.eof()) {
         cin >> entry;
         if(entry.getSequence().size() == 0)
